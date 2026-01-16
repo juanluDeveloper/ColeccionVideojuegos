@@ -10,8 +10,8 @@
 }
 
 .hover {
-  transform: scale(1.3);
-  z-index: 1000;
+  transform: scale(1.2);
+  z-index: 5; /* por debajo del estante (10) */
 }
 
 .cube.animated {
@@ -82,7 +82,8 @@
   z-index: 2;
   transform-origin: left;
   background-color: white;
-  
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 /* Cara 2 (Gira cuando se hace clic) */
@@ -107,6 +108,24 @@
   border-color: black;
 }
 
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2000;
+
+  border: 0;
+  background: white;
+  border-radius: 10px;
+  padding: 6px 8px;
+  cursor: pointer;
+
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.close-btn:hover {
+  transform: scale(1.05);
+}
 
 
 
@@ -257,36 +276,264 @@ img {
   height: 100%;
 }
 
-.cross {
+.cross{
   position: absolute;
-  left: 95%;
+  top: 10px;
+  right: 10px;
+  left: auto;
+
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: white;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 8px;
+  cursor: pointer;
+
+  color: #111;
+  z-index: 2000;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+.cross:hover{
+  transform: scale(1.05);
 }
 
+.backCard {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Disco decorativo pequeño */
 .disk{
-  top: 0;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+
+  width: 140px;
+  height: 140px;
+
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .disk img{
-  left: 0;
-  border-radius: 10000px;
-  width: 60%;
+  width: 100%;
   height: auto;
+  border-radius: 9999px;
   animation: spin 7s linear infinite;
   border: black 3px solid;
 }
+
 .disk .circle{
   position: absolute;
   background-color: #f0f0f0;
-  border-radius: 10000px;
+  border-radius: 9999px;
   border: black 3px solid;
-  width: 10%;
-  height: 10%;
+  width: 18%;
+  height: 18%;
 }
+
+/* Cuando la página 2 está volteada, compensamos la cara para que el contenido se lea normal */
+.middleCard.flipped > .gameInfo,
+.middleCard.flipped .gameInfo {
+  transform: rotateY(180deg);
+}
+
+/* ===== Portada cerrada ===== */
+.coverClosed{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 18px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.cover-ps { background: linear-gradient(180deg, #0b3d91 0%, #071a3a 100%); }
+.cover-xbox { background: linear-gradient(180deg, #107c10 0%, #0a3d0a 100%); }
+.cover-pc { background: linear-gradient(180deg, #3d3435 0%, #1f1a1a 100%); }
+.cover-ds { background: linear-gradient(180deg, #f2f2f2 0%, #dcdcdc 100%); }
+.cover-switch { background: linear-gradient(180deg, #e60012 0%, #8a000a 100%); }
+
+.coverTop{
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.coverPill{
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.16);
+  color: rgba(255,255,255,0.92);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(2px);
+  white-space: nowrap;
+}
+
+.coverPillMuted{
+  opacity: 0.9;
+}
+
+.coverCenter{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding-top: 10px;
+}
+
+.coverArt{
+  width: 82%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.92);
+  border: 2px solid rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.coverArt img{
+  width: 84%;
+  height: auto;
+  object-fit: contain;
+}
+
+.coverTitle{
+  margin: 0;
+  text-align: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.95);
+  letter-spacing: 0.2px;
+  line-height: 1.1;
+}
+
+.coverBottom{
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.coverMeta{
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.92);
+  min-width: 120px;
+}
+
+.coverMetaLabel{
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.coverMetaValue{
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.coverShine{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 45%);
+  transform: translateX(-35%);
+  pointer-events: none;
+}
+
+/* ===== Libro abierto ===== */
+.pageContent{
+  width: 100%;
+  height: 100%;
+  padding: 22px 22px;
+  box-sizing: border-box;
+}
+
+/* Página derecha tipo “contraportada” */
+.rightPage{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 22px;
+  box-sizing: border-box;
+}
+
+.rightTop{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+
+.rightTitle{
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.rightHint{
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.rightActions{
+  display: grid;
+  gap: 10px;
+  max-width: 240px;
+}
+
+.rightBtn{
+  border: 1px solid rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.9);
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Disco pequeño abajo derecha */
+.diskSmall{
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diskSmall img{
+  width: 100%;
+  height: auto;
+  border-radius: 9999px;
+  animation: spin 7s linear infinite;
+  border: black 3px solid;
+}
+
+.diskSmall .circle{
+  position: absolute;
+  background-color: #f0f0f0;
+  border-radius: 9999px;
+  border: black 3px solid;
+  width: 18%;
+  height: 18%;
+}
+
 
 @keyframes spin {
   from{

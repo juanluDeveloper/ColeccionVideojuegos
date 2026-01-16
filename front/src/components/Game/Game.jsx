@@ -1,123 +1,128 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Game.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import logoSwitch from '../../assets/images/logo-switch.png'
-import logoDS from '../../assets/images/logo-ds.png'
-import logo from '../../assets/images/logo192.png'
-import GameInfo from '../GameInfo/GameInfo.jsx'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import logoSwitch from "../../assets/images/logo-switch.png";
+import logoDS from "../../assets/images/logo-ds.png";
+import logo from "../../assets/images/logo192.png";
+import GameInfo from "../GameInfo/GameInfo.jsx";
+import { getSoportes, getProgresos } from "../../api/gamesApi";
+import { Spin, Alert } from "antd";
+import CoverArt from "../CoverArt/CoverArt";
 
-const Game = ({ platform, title }) => {
-  const [isAnimating, setIsAnimating] = useState(false); // Estado para iniciar y detener la animación
+
+const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
+  const spineRef = useRef(null); // medimos desde el lomo (como tu código original)
+
+  const [isAnimating, setIsAnimating] = useState(false); // controla CSS .animated
   const [isHover, setIsHover] = useState(false);
-  const [position, setPosition] = useState({}); // Estilos dinámicos
-  const [positionini, setPositionini] = useState({}); // Estilos dinámicos
-  const [isReturning, setIsReturning] = useState(false); // Estado para saber si estamos volviendo al grid
+  const [position, setPosition] = useState({});
+  const [positionIni, setPositionIni] = useState(null); // DOMRect del lomo en estantería
   const [isFlipped, setIsFlipped] = useState(false);
 
-  const game = {
-    nombre: "God of War",
-    precio: 30.56,
-    fechaLanzamiento: "20/04/2018",
-    plataforma: "PS4",
-    genero: "Aventuras",
-    progreso: [
-      "Backlog", "Jugado", "Completado"
-    ],
-    soporte: {
-      id: 0,
-      tipo: "Fisico",
-      estado: "Bueno",
-      edicion: "Coleccionista",
-      distribucion: "LGR",
-      precintado: true,
-      region: "PAL_ESP",
-      anyoSalidaDist: 2018,
-      tienda: "Amazon"
+  const [detail, setDetail] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState("");
+
+  // Abrir/cerrar controlado SOLO por isOpen (estado global)
+  useEffect(() => {
+    if (isOpen) {
+      if (!isAnimating) openToCenter();
+    } else {
+      if (isAnimating) closeToShelf();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
-  }
-  const handleCardClick = () => {
-    setIsFlipped(!isFlipped);
-  };
+  const openToCenter = () => {
+    const element = spineRef.current;
+    if (!element) return;
 
+    const rect = element.getBoundingClientRect();
+    setPositionIni(rect);
 
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
 
-  const handleMouseEnter = () => {
-    if (!isAnimating) {
-      setIsHover(true)
-    }
-  };
+    const targetX = (windowWidth - rect.width) / 1.5;
+    const targetY = (windowHeight - rect.height) / 3;
 
-  const handleMouseLeave = () => {
-    if (!isAnimating) {
-      setIsHover(false)
-    }
-  };
+    // 1) Pintamos primero la posición inicial (en la estantería)
+    setPosition({
+      position: "fixed",
+      top: `${rect.top}px`,
+      left: `${rect.left}px`,
+      zIndex: 1000,
+      transition: "top 1s ease, left 1s ease",
+    });
 
+    setIsAnimating(true);
+    setIsHover(false);
 
-  const handleAnimationToggle = (event) => {
-    const element = event.currentTarget;
-    const rect = element.getBoundingClientRect(); // Obtener posición inicial del elemento
-
-    if (!isAnimating) {
-      // Calcular el centro de la ventana
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      setPositionini(rect)
-      const targetX = (windowWidth - rect.width) / 1.5; // Coordenada X centrada
-      const targetY = (windowHeight - rect.height) / 3; // Coordenada Y centrada
-
-      // Iniciar animación hacia el centro
-      setPosition({
-        position: "fixed",
-        top: `${rect.top}px`, // Mantener posición antes de la animación
-        left: `${rect.left}px`,
-        zIndex: 1000,
-        transition: "all 1s ease", // Transición para movimiento
-      });
-
-      setTimeout(() => {
-        // Mover al centro
+    // 2) En el siguiente frame (doble RAF), movemos al centro -> aquí sí anima
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
         setPosition((prev) => ({
           ...prev,
           top: `${targetY}px`,
           left: `${targetX}px`,
         }));
-      }, 0);
-
-      setIsAnimating(true);
-    }
-    else {
-      // Empezar la animación para volver al grid
-      setIsReturning(true); // Activar el estado de retorno
-
-      // Restaurar la posición original
-      setPosition({
-        position: "absolute", // El componente vuelve al grid (posición relativa al contenedor)
-        top: `${rect.top}px`,
-        left: `${rect.left}px`,
-        zIndex: 1000,
-        transition: "all 1s ease", // Transición suave para moverse de vuelta
-
       });
+    });
 
-      // Después de que la animación termine, eliminamos el estilo
-      setTimeout(() => {
-        setPosition((prev) => ({
-          ...prev,
-          top: `${positionini.top}px`,
-          left: `${positionini.left}px`,
-        }));
-        setIsReturning(false); // Terminamos la animación de vuelta
-      }, 0); // Duración de la transición
+    // detalle lazy al abrir
+    const resolvedGameId = gameId ?? game?.id;
+    if (!resolvedGameId) return;
 
-      setTimeout(() => {
-        setPosition((prev) => ({}));
-        setIsReturning(false); // Terminamos la animación de vuelta
-      }, 1000); // Duración de la transición
-    }
+    setDetailLoading(true);
+    setDetailError("");
+    Promise.all([getSoportes(resolvedGameId), getProgresos(resolvedGameId)])
+      .then(([soporte, progreso]) => {
+        setDetail({ soporte: soporte || [], progreso: progreso || [] });
+      })
+      .catch(() => setDetailError("No se pudo cargar el detalle del juego."))
+      .finally(() => setDetailLoading(false));
+  };
 
-    setIsAnimating(!isAnimating); // Cambiar el estado de animación
+
+  const closeToShelf = () => {
+    if (!positionIni) return;
+
+    // cierre “bueno”: mantener fixed y animar a la posición original
+    setIsHover(false);
+
+    setPosition((prev) => ({
+      ...prev,
+      top: `${positionIni.top}px`,
+      left: `${positionIni.left}px`,
+      transition: "all 1s ease",
+    }));
+
+    // al terminar, limpiamos estilos para que vuelva al grid sin saltos
+    setTimeout(() => {
+      setPosition({});
+      setIsAnimating(false);
+      setIsFlipped(false);
+    }, 1000);
+  };
+
+  const handleMouseEnter = () => {
+    if (!isAnimating && !isOpen) setIsHover(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHover(false);
+  };
+
+  const handleSpineClick = (e) => {
+    e.stopPropagation();
+    // toggle simple: si está abierto, cierra; si está cerrado, abre
+    if (isOpen) onClose?.();
+    else onOpen?.();
+  };
+
+  const handleCardClick = (e) => {
+    e.stopPropagation();
+    setIsFlipped((v) => !v);
   };
 
   const renderPlatformIcon = (platform) => {
@@ -127,11 +132,7 @@ const Game = ({ platform, title }) => {
           <div className={`front ${isAnimating ? "animated" : ""}`}>
             <div className="platform ps">
               <div className="icon ps">
-                <FontAwesomeIcon
-                  icon="fa-brands fa-playstation"
-                  size="xl"
-                  style={{ color: "#ffffff" }}
-                />
+                <FontAwesomeIcon icon="fa-brands fa-playstation" size="xl" style={{ color: "#ffffff" }} />
               </div>
               <div> PS</div>
             </div>
@@ -143,7 +144,7 @@ const Game = ({ platform, title }) => {
           <div className={`front ${isAnimating ? "animated" : ""}`}>
             <div className="platform xbox">
               <div className="icon xbox">
-                <FontAwesomeIcon icon="fa-brands fa-xbox" size="" rotation={90} style={{ color: "#ffffff", }} />
+                <FontAwesomeIcon icon="fa-brands fa-xbox" rotation={90} style={{ color: "#ffffff" }} />
               </div>
               <div> XBOX</div>
             </div>
@@ -186,83 +187,142 @@ const Game = ({ platform, title }) => {
     }
   };
 
-
   return (
     <div className="game-container">
       <div
         className={`cube ${isAnimating ? "animated" : ""} ${isHover ? "hover" : ""}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        style={position} // Aplicar estilos dinámicos
-
+        style={position}
       >
-        <div onClick={handleAnimationToggle}>
+        {/* LOMO (medición + click abrir/cerrar) */}
+        <div ref={spineRef} onClick={handleSpineClick}>
           {renderPlatformIcon(platform)}
         </div>
+
+        {/* PANEL ABIERTO */}
         <div className={`left ${platform} ${isAnimating ? "animated" : ""}`}>
-          {/* <div className="book-container">
-            <div className={`book`} onClick={handleBookClick}>
-              <div className={`cover ${isOpen ? "open" : ""}`}>
-                <img src={logo} alt="imagen del juego" />
-              </div>
-              <div className={`back-cover ${isOpen ? "open" : ""}`}>
-                Contraportada
-              </div>
-            </div>
-            <div className={`page ${isOpen ? "open" : ""}`}>
-              Página 1
-            </div>
-
-          </div> */}
           <div className="card-container" onClick={handleCardClick}>
-            {/* <div className={`card ${isFlipped ? "flipped" : ""}`}>
-              <div className="frontcard">
-                <img src={logo} alt="imagen del juego" />
-              </div>
-              <div className="back">
-                <GameInfo game={game}></GameInfo>
-              </div>
-            </div> */}
-
             <div className="book" onClick={handleCardClick}>
-              {/* Cara 1 (se oculta después del giro) */}
+              {/* PORTADA CERRADA */}
               <div className={`page frontCard ${isFlipped ? "flipped" : ""}`}>
-                <img src={logo} alt="imagen del juego" />
-                
+                <div className={`coverClosed cover-${platform}`}>
+                  <div className="coverTop">
+                    <span className="coverPill">{labelPlataforma(platform)}</span>
+                    <span className="coverPill coverPillMuted">{game?.genero ?? "—"}</span>
+                  </div>
+
+                  <div className="coverCenter">
+                    <div className="coverArt">
+                      <CoverArt
+                        title={game?.nombre ?? title}
+                        platform={platform}
+                        coverUrl={game?.coverUrl}   // si no existe, usa placeholder premium
+                      />
+                    </div>
+
+                    <h2 className="coverTitle">{game?.nombre ?? title}</h2>
+                  </div>
+
+                  <div className="coverBottom">
+                    <div className="coverMeta">
+                      <span className="coverMetaLabel">Lanz.</span>
+                      <span className="coverMetaValue">{fmtYear(game?.fechaLanzamiento)}</span>
+                    </div>
+                    <div className="coverMeta">
+                      <span className="coverMetaLabel">Compra</span>
+                      <span className="coverMetaValue">{fmtDate(game?.fechaCompra)}</span>
+                    </div>
+                  </div>
+
+                  <div className="coverShine" />
+                </div>
               </div>
 
-              {/* Cara 2 (Gira) */}
+              {/* PÁGINA IZQUIERDA (INFO) */}
               <div className={`page middleCard ${isFlipped ? "flipped" : ""}`}>
-                <GameInfo game={game}></GameInfo>
+                <div className="pageContent">
+                  {detailLoading && <Spin />}
+                  {detailError && <Alert type="error" message={detailError} />}
+                  {!detailLoading && !detailError && <GameInfo game={mergeGame(game, detail)} />}
+                </div>
               </div>
 
-              {/* Cara 3 (Siempre visible y encima de la cara 1) */}
+              {/* PÁGINA DERECHA (CONTRAPORTADA + DISCO) */}
               <div className="page backCard">
-                <div className="disk">
-                  <img src={logoSwitch} alt="Logo" />
-                  <div className="circle"></div>
+                <div className="rightPage">
+                  <div className="rightTop">
+                    <div className="rightTitle">Acciones</div>
+                    <div className="rightHint">Próximamente</div>
+                  </div>
+
+                  <div className="rightActions">
+                    <button className="rightBtn" disabled>Editar juego</button>
+                    <button className="rightBtn" disabled>Añadir progreso</button>
+                    <button className="rightBtn" disabled>Añadir soporte</button>
+                  </div>
+
+                  {/* Disco decorativo pequeñín abajo derecha */}
+                  <div className="diskSmall">
+                    <img src={logoSwitch} alt="Disco" />
+                    <div className="circle"></div>
+                  </div>
                 </div>
               </div>
             </div>
 
-
           </div>
-          {/* {isFlipped && (
-            <div className="disk">
-              <img src={logoSwitch} alt="Logo" />
-              <div className="circle"></div>
-            </div>
-          )} */}
 
-          <div className="cross" onClick={handleAnimationToggle}>
+          {/* X CERRAR */}
+          <div
+            className="cross"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose?.();
+            }}
+            title="Cerrar"
+          >
             <FontAwesomeIcon icon="fa-solid fa-x" />
           </div>
         </div>
-
-
       </div>
     </div>
   );
 };
+
+function mergeGame(game, detail) {
+  if (!game) return null;
+  return {
+    ...game,
+    soporte: detail?.soporte ?? game.soporte ?? [],
+    progreso: detail?.progreso ?? game.progreso ?? [],
+  };
+}
+
+function labelPlataforma(platform) {
+  switch (platform) {
+    case "ps": return "PlayStation";
+    case "xbox": return "Xbox";
+    case "pc": return "PC";
+    case "ds": return "Nintendo DS";
+    default: return "Switch";
+  }
+}
+
+function fmtYear(dateLike) {
+  if (!dateLike) return "—";
+  const s = String(dateLike);
+  // soporta "YYYY-MM-DD" y Date
+  const y = s.slice(0, 4);
+  return /^\d{4}$/.test(y) ? y : "—";
+}
+
+function fmtDate(dateLike) {
+  if (!dateLike) return "—";
+  const s = String(dateLike);
+  // si viene "YYYY-MM-DD" lo dejamos así por ahora
+  return s;
+}
+
 
 export default Game;

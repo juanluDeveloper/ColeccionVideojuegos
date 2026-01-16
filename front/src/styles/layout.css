@@ -1,0 +1,25 @@
+.app-sider {
+  border-right: 1px solid #f0f0f0;
+}
+
+.app-logo {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.app-header {
+  background: white !important;
+  padding: 0 16px !important;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+}
+
+.app-content {
+  padding: 16px;
+  background: #f5f6f8;
+}

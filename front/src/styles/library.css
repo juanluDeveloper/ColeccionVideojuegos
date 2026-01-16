@@ -1,0 +1,82 @@
+.library-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.library-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+/* Estantería: contenedor con “tabla” inferior */
+.shelf-area {
+  position: relative;
+  isolation: isolate; /* importante: controla el stacking */
+  /* Menos padding inferior para que no “floten” */
+  padding: 8px 10px 14px;
+
+  border-radius: 12px;
+}
+
+/* La tabla del estante */
+.shelf-area::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+
+  /* Antes: bottom: 10px;  -> la subimos */
+  bottom: 0px;
+
+  height: 14px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #e7d7c5 0%, #d2b89f 100%);
+  box-shadow:
+    0 6px 14px rgba(0,0,0,0.10),
+    inset 0 2px 0 rgba(255,255,255,0.5);
+
+  z-index: 1;
+  pointer-events: none;
+}
+
+
+/* Una línea/sombra justo encima de la tabla (efecto apoyo) */
+.shelf-area::before {
+  content: none;
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 26px;
+  height: 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.06);
+  filter: blur(0.2px);
+}
+
+/* Grid tipo estantería (más apretado) */
+.libreria {
+  display: grid;
+  align-items: end;
+
+  /* Más apretado */
+  gap: 6px 6px;
+
+  /* Slots fijos: se apilan como libros */
+  grid-template-columns: repeat(auto-fill, 60px);
+  justify-content: start;
+
+  position: relative;
+  z-index: 2;
+}
+
+
+/* Evita que cada item se estire */
+.libreria > * {
+  justify-self: start;
+  width: fit-content;
+}
+
