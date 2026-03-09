@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Game from "../components/Game/Game";
-import { getMyGames } from "../api/gamesApi";
+import { getMyGames, getGameDetail } from "../api/gamesApi";
 import { Alert, Spin, Input, Select, Button } from "antd";
 import { AiOutlineSearch } from "react-icons/ai";
 import "./../styles/library.css";
@@ -10,6 +10,9 @@ export default function Library() {
   const [openGameId, setOpenGameId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const shelfRef = useRef(null);
+  const libreriaRef = useRef(null);
+  const [multiShelf, setMultiShelf] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -19,7 +22,23 @@ export default function Library() {
       setError("");
       try {
         const data = await getMyGames();
-        if (mounted) setGames(Array.isArray(data) ? data : []);
+        const baseList = Array.isArray(data) ? data : [];
+
+        // Premium UX: prefetch IGDB cover/art URLs for games already linked to IGDB
+        // (keeps shelf visually rich without waiting to open each book)
+        const enriched = await Promise.all(
+          baseList.map(async (g) => {
+            if (!g?.igdbGameId) return g;
+            try {
+              const dto = await getGameDetail(g.id);
+              return { ...g, ...(dto || {}) };
+            } catch {
+              return g;
+            }
+          })
+        );
+
+        if (mounted) setGames(enriched);
       } catch (e) {
         setError(e?.response?.data?.message || "No se pudieron cargar los videojuegos.");
       } finally {
@@ -31,6 +50,36 @@ export default function Library() {
       mounted = false;
     };
   }, []);
+
+  useLayoutEffect(() => {
+    const el = libreriaRef.current;
+    if (!el) return;
+
+    const compute = () => {
+      const kids = el.children;
+      if (!kids || kids.length === 0) {
+        setMultiShelf(false);
+        return;
+      }
+
+      // altura de un libro (spine)
+      const itemH = kids[0].getBoundingClientRect().height;
+
+      // altura total de la librería (todas las filas)
+      const totalH = el.getBoundingClientRect().height;
+
+      // row-gap en tu CSS es 8px, sumamos un margen de seguridad
+      const approxRow = itemH + 8;
+
+      const rows = Math.round(totalH / approxRow);
+      setMultiShelf(rows > 1);
+    };
+
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, [games]);
+
 
   if (loading) return <div style={{ padding: 20 }}><Spin /></div>;
   if (error) return <div style={{ padding: 20 }}><Alert type="error" message={error} /></div>;
@@ -64,9 +113,11 @@ export default function Library() {
           />
         </div>
 
-        <Button type="primary" onClick={() => alert("Modal nuevo juego (pendiente)")}>
-          Nuevo videojuego
-        </Button>
+        <div className="library-toolbar-right">
+          <Button type="primary" onClick={() => alert("Modal nuevo juego (pendiente)")}>
+            Nuevo videojuego
+          </Button>
+        </div>
       </div>
 
       {/* CONTENIDO */}
@@ -76,8 +127,8 @@ export default function Library() {
           <p>Crea tu primer juego para que la librería muestre carátulas.</p>
         </div>
       ) : (
-        <div className="shelf-area">
-          <div className="libreria">
+        <div ref={shelfRef} className={`shelf-area ${multiShelf ? "multi" : ""}`}>
+          <div ref={libreriaRef} className="libreria">
             {games.map((g) => (
               <Game
                 key={g.id}

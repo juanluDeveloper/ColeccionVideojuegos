@@ -51,6 +51,8 @@ public class SecurityConfig {
 
                     // Endpoints privados
                     auth.requestMatchers("/api/v1/videojuegos/**").authenticated();
+                    auth.requestMatchers("/api/v1/igdb/**").authenticated();
+                    auth.requestMatchers("/api/v1/media/**").authenticated();
                     auth.requestMatchers("/api/v1/admin/**").authenticated();
                     auth.requestMatchers("/api/v1/users/**").authenticated();
                     auth.requestMatchers("/api/v1/soporte/**").authenticated();

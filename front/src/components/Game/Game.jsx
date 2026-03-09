@@ -5,10 +5,12 @@ import logoSwitch from "../../assets/images/logo-switch.png";
 import logoDS from "../../assets/images/logo-ds.png";
 import logo from "../../assets/images/logo192.png";
 import GameInfo from "../GameInfo/GameInfo.jsx";
-import { getSoportes, getProgresos } from "../../api/gamesApi";
+import { getSoportes, getProgresos, getGameDetail } from "../../api/gamesApi";
 import { Spin, Alert } from "antd";
 import CoverArt from "../CoverArt/CoverArt";
-
+import { faPlaystation, faXbox, faSteam } from "@fortawesome/free-brands-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useAuthedImageBlob } from "../../hooks/useAuthedImageBlob";
 
 const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
   const spineRef = useRef(null); // medimos desde el lomo (como tu código original)
@@ -69,15 +71,23 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
       });
     });
 
-    // detalle lazy al abrir
+    // detalle lazy al abrir (incluye IGDB URLs + soporte + progreso)
     const resolvedGameId = gameId ?? game?.id;
     if (!resolvedGameId) return;
 
+    reloadDetail(resolvedGameId);
+  };
+
+  const reloadDetail = (resolvedGameId) => {
     setDetailLoading(true);
     setDetailError("");
-    Promise.all([getSoportes(resolvedGameId), getProgresos(resolvedGameId)])
-      .then(([soporte, progreso]) => {
-        setDetail({ soporte: soporte || [], progreso: progreso || [] });
+    Promise.all([getGameDetail(resolvedGameId), getSoportes(resolvedGameId), getProgresos(resolvedGameId)])
+      .then(([dto, soporte, progreso]) => {
+        setDetail({
+          ...(dto || {}),
+          soporte: soporte || [],
+          progreso: progreso || [],
+        });
       })
       .catch(() => setDetailError("No se pudo cargar el detalle del juego."))
       .finally(() => setDetailLoading(false));
@@ -129,10 +139,10 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
     switch (platform) {
       case "ps":
         return (
-          <div className={`front ${isAnimating ? "animated" : ""}`}>
+          <div className={`front ps ${isAnimating ? "animated" : ""}`}>
             <div className="platform ps">
               <div className="icon ps">
-                <FontAwesomeIcon icon="fa-brands fa-playstation" size="xl" style={{ color: "#ffffff" }} />
+                  <FontAwesomeIcon icon={faPlaystation} size="xl" style={{ color: "#ffffff" }} />
               </div>
               <div> PS</div>
             </div>
@@ -141,10 +151,10 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
         );
       case "xbox":
         return (
-          <div className={`front ${isAnimating ? "animated" : ""}`}>
+          <div className={`front xbox ${isAnimating ? "animated" : ""}`}>
             <div className="platform xbox">
               <div className="icon xbox">
-                <FontAwesomeIcon icon="fa-brands fa-xbox" rotation={90} style={{ color: "#ffffff" }} />
+                <FontAwesomeIcon icon={faXbox} style={{ color: "#ffffff" }} />
               </div>
               <div> XBOX</div>
             </div>
@@ -156,7 +166,7 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
           <div className={`front pc ${isAnimating ? "animated" : ""}`}>
             <div className="platform pc">
               <div className="icon pc">
-                <FontAwesomeIcon icon="fa-brands fa-steam" size="xl" />
+                <FontAwesomeIcon icon={faSteam} size="xl" />
               </div>
             </div>
             <div className="title pc">{title}</div>
@@ -187,6 +197,36 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
     }
   };
 
+  // merged game data (base + IGDB DTO + soporte/progreso)
+  const merged = mergeGame(game, detail);
+  const artworkBlob = useAuthedImageBlob(merged?.artworkUrl);
+  const diskLogoByPlatform = {
+    ps: logo,
+    xbox: logo,
+    pc: logo,
+    ds: logoDS,
+    switch: logoSwitch,
+  };
+  const diskLogo = diskLogoByPlatform[platform] || logoSwitch;
+
+  const renderDisk = () => {
+    if (platform === "ps") {
+      return <FontAwesomeIcon icon={faPlaystation} className="diskIcon" />;
+    }
+    if (platform === "xbox") {
+      return <FontAwesomeIcon icon={faXbox} className="diskIcon" />;
+    }
+    if (platform === "pc") {
+      return <FontAwesomeIcon icon={faSteam} className="diskIcon" />;
+    }
+    if (platform === "ds") {
+      return <img src={logoDS} alt="Disk" className="diskImg" />;
+    }
+    return <img src={logoSwitch} alt="Disk" className="diskImg" />;
+  };
+
+
+
   return (
     <div className="game-container">
       <div
@@ -213,25 +253,24 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
                   </div>
 
                   <div className="coverCenter">
-                    <div className="coverArt">
-                      <CoverArt
-                        title={game?.nombre ?? title}
-                        platform={platform}
-                        coverUrl={game?.coverUrl}   // si no existe, usa placeholder premium
-                      />
-                    </div>
-
-                    <h2 className="coverTitle">{game?.nombre ?? title}</h2>
+                  <div className={`coverSlot ${platform}`}>
+                    <CoverArt
+                      title={merged?.nombre ?? title}
+                      platform={platform}
+                      coverUrl={merged?.coverUrl} // Usamos URL de portada si está disponible
+                    />
+                  </div>
+                    <h2 className="coverTitle">{merged?.nombre ?? title}</h2>
                   </div>
 
                   <div className="coverBottom">
                     <div className="coverMeta">
                       <span className="coverMetaLabel">Lanz.</span>
-                      <span className="coverMetaValue">{fmtYear(game?.fechaLanzamiento)}</span>
+                      <span className="coverMetaValue">{fmtYear(merged?.fechaLanzamiento)}</span>
                     </div>
                     <div className="coverMeta">
                       <span className="coverMetaLabel">Compra</span>
-                      <span className="coverMetaValue">{fmtDate(game?.fechaCompra)}</span>
+                      <span className="coverMetaValue">{fmtDate(merged?.fechaCompra)}</span>
                     </div>
                   </div>
 
@@ -244,13 +283,32 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
                 <div className="pageContent">
                   {detailLoading && <Spin />}
                   {detailError && <Alert type="error" message={detailError} />}
-                  {!detailLoading && !detailError && <GameInfo game={mergeGame(game, detail)} />}
+                  {!detailLoading && !detailError && (
+                    <GameInfo
+                      game={merged}
+                      onIgdbLinked={() => {
+                        const resolvedGameId = gameId ?? game?.id;
+                        if (resolvedGameId) reloadDetail(resolvedGameId);
+                      }}
+                    />
+                  )}
                 </div>
               </div>
 
               {/* PÁGINA DERECHA (CONTRAPORTADA + DISCO) */}
               <div className="page backCard">
-                <div className="rightPage">
+                <div
+                  className="rightPage"
+                  style={
+                    artworkBlob
+                      ? {
+                          backgroundImage: `linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)), url(${artworkBlob})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }
+                      : undefined
+                  }
+                >
                   <div className="rightTop">
                     <div className="rightTitle">Acciones</div>
                     <div className="rightHint">Próximamente</div>
@@ -264,7 +322,9 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
 
                   {/* Disco decorativo pequeñín abajo derecha */}
                   <div className="diskSmall">
-                    <img src={logoSwitch} alt="Disco" />
+                    <div className="diskInner">
+                      {renderDisk()}
+                    </div>
                     <div className="circle"></div>
                   </div>
                 </div>
@@ -282,7 +342,7 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
             }}
             title="Cerrar"
           >
-            <FontAwesomeIcon icon="fa-solid fa-x" />
+            <FontAwesomeIcon icon={faXmark} />
           </div>
         </div>
       </div>
@@ -294,6 +354,7 @@ function mergeGame(game, detail) {
   if (!game) return null;
   return {
     ...game,
+    ...(detail || {}),
     soporte: detail?.soporte ?? game.soporte ?? [],
     progreso: detail?.progreso ?? game.progreso ?? [],
   };

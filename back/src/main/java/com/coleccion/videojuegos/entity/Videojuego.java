@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -56,6 +57,29 @@ public class Videojuego {
     @JoinColumn(name = "USUARIO_ID", nullable = false)
     @JsonBackReference
     private Usuario usuario;
+
+    // =============================
+    // IGDB linkage (optional)
+    // =============================
+    /** IGDB Game ID (v4) linked to this videojuego. */
+    @Column(name = "IGDB_GAME_ID")
+    private Long igdbGameId;
+
+    /** IGDB slug (used for linking to igdb.com). */
+    @Column(name = "IGDB_SLUG")
+    private String igdbSlug;
+
+    /** Cover image_id from IGDB images API. */
+    @Column(name = "IGDB_COVER_IMAGE_ID")
+    private String igdbCoverImageId;
+
+    /** One preferred artwork image_id (optional). */
+    @Column(name = "IGDB_ARTWORK_IMAGE_ID")
+    private String igdbArtworkImageId;
+
+    /** Last time we synced IGDB metadata for this game (optional). */
+    @Column(name = "IGDB_LAST_SYNC")
+    private Instant igdbLastSync;
 
     public void addProgreso(Progreso elementoProgreso) {
         this.progreso.add(elementoProgreso);

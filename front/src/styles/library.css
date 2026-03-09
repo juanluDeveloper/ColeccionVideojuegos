@@ -1,82 +1,188 @@
-.library-toolbar {
+/* =========================
+   TOOLBAR (RESPONSIVE)
+   ========================= */
+
+.library-toolbar{
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
+
+  flex-wrap: wrap; /* ✅ si no cabe, baja */
 }
 
-.library-toolbar-left {
+.library-toolbar-left{
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+
+  flex: 1 1 420px; /* ✅ en pantallas estrechas se adapta */
 }
-/* Estantería: contenedor con “tabla” inferior */
-.shelf-area {
+
+.library-toolbar-right{
+  flex: 0 0 auto;
+}
+
+@media (max-width: 640px){
+  .library-toolbar-right{
+    width: 100%;
+    display: flex;
+  }
+
+  .library-toolbar-right button{
+    width: 100%;
+  }
+
+  /* opcional: inputs/selects al 100% en móvil */
+  .library-toolbar-left input,
+  .library-toolbar-left .ant-select{
+    width: 100% !important;
+  }
+}
+
+
+/* =========================
+   SHELF AREA (ESTANTERÍA REAL)
+   ========================= */
+
+/*
+  La clave para que NO haya juegos flotantes:
+  - Las filas tienen que “medir” siempre lo mismo.
+  - Dibujamos las baldas como un fondo repetido,
+    con el MISMO alto de fila que usa el flex-wrap.
+*/
+
+.shelf-area{
+  /* medidas base */
+  --bookH: 40vh;           /* ✅ coincide con el alto del lomo (Game.css) */
+  --rowGap: 70px;          /* ✅ separación vertical entre baldas */
+  --boardH: 14px;          /* grosor balda */
+  --sideW: 14px;           /* grosor laterales */
+  --padTop: 18px;          /* padding interior arriba */
+  --padBottom: 18px;       /* padding interior abajo */
+
+  --rowH: calc(var(--bookH) + var(--rowGap)); /* ✅ alto TOTAL por fila */
+
   position: relative;
-  isolation: isolate; /* importante: controla el stacking */
-  /* Menos padding inferior para que no “floten” */
-  padding: 8px 10px 14px;
+  border-radius: 18px;
 
-  border-radius: 12px;
+  /* dejamos margen interno para laterales */
+  padding: var(--padTop) calc(var(--sideW) + 16px) var(--padBottom);
+
+  /* Fondo suave interior */
+  background-color: rgba(0,0,0,0.02);
+
+  /* ✅ 3 capas de fondo:
+     1) lateral izquierdo madera
+     2) lateral derecho madera
+     3) baldas repetidas (una por fila)
+  */
+  background-image:
+    linear-gradient(to right,
+      rgba(210,184,159,0.75) 0%,
+      rgba(231,215,197,0.85) 40%,
+      rgba(210,184,159,0.75) 100%
+    ),
+    linear-gradient(to left,
+      rgba(210,184,159,0.75) 0%,
+      rgba(231,215,197,0.85) 40%,
+      rgba(210,184,159,0.75) 100%
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(var(--rowH) - var(--boardH)),
+      rgba(231,215,197,0.95) calc(var(--rowH) - var(--boardH)),
+      rgba(210,184,159,0.95) var(--rowH)
+    );
+
+  background-repeat:
+    no-repeat,
+    no-repeat,
+    repeat;
+
+  background-size:
+    var(--sideW) 100%,
+    var(--sideW) 100%,
+    100% var(--rowH);
+
+  background-position:
+    left top,
+    right top,
+    left var(--padTop);
+
+  /* un poco de profundidad */
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.03),
+    0 10px 30px rgba(0,0,0,0.08);
 }
 
-/* La tabla del estante */
-.shelf-area::after {
+/* ✅ “tapa” superior de la estantería */
+.shelf-area::before{
   content: "";
   position: absolute;
-  left: 8px;
-  right: 8px;
+  left: 0;
+  right: 0;
+  top: 0;
 
-  /* Antes: bottom: 10px;  -> la subimos */
-  bottom: 0px;
+  height: var(--boardH);
+  border-radius: 18px 18px 10px 10px;
 
-  height: 14px;
-  border-radius: 10px;
   background: linear-gradient(180deg, #e7d7c5 0%, #d2b89f 100%);
   box-shadow:
     0 6px 14px rgba(0,0,0,0.10),
-    inset 0 2px 0 rgba(255,255,255,0.5);
+    inset 0 2px 0 rgba(255,255,255,0.55);
 
-  z-index: 1;
+  pointer-events: none;
+}
+
+/* ✅ base inferior (para cerrar la estantería) */
+.shelf-area::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: var(--boardH);
+  border-radius: 10px 10px 18px 18px;
+
+  background: linear-gradient(180deg, #e7d7c5 0%, #d2b89f 100%);
+  box-shadow:
+    0 6px 14px rgba(0,0,0,0.10),
+    inset 0 2px 0 rgba(255,255,255,0.55);
+
   pointer-events: none;
 }
 
 
-/* Una línea/sombra justo encima de la tabla (efecto apoyo) */
-.shelf-area::before {
-  content: none;
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 26px;
-  height: 6px;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.06);
-  filter: blur(0.2px);
-}
+/* =========================
+   LIBRERÍA (WRAP CORRECTO)
+   ========================= */
 
-/* Grid tipo estantería (más apretado) */
-.libreria {
-  display: grid;
-  align-items: end;
+.libreria{
+  display: flex;
+  flex-wrap: wrap;                /* ✅ baja a otra fila */
+  align-items: flex-end;          /* ✅ libros apoyados abajo */
 
-  /* Más apretado */
-  gap: 6px 6px;
+  /* ✅ IMPORTANTE: el row-gap debe ser el mismo que el diseño de baldas */
+  column-gap: 6px;
+  row-gap: var(--rowGap);
 
-  /* Slots fijos: se apilan como libros */
-  grid-template-columns: repeat(auto-fill, 60px);
-  justify-content: start;
+  justify-content: flex-start;
 
   position: relative;
-  z-index: 2;
+  z-index: 2; /* por encima de los fondos */
 }
 
-
-/* Evita que cada item se estire */
-.libreria > * {
-  justify-self: start;
+/* ✅ cada Game mantiene su tamaño natural */
+.libreria > *{
+  flex: 0 0 auto;
   width: fit-content;
-}
 
+  /* ✅ Esto hace que el lomo quede “apoyado” sobre la tabla,
+     SIN translate raro que se acumule por filas */
+  margin-bottom: 6px;
+}

@@ -26,3 +26,40 @@
   justify-content: center;
   padding-top: 10%;
 }
+
+/* --- IGDB attribution + link (commercial partnership requirement) --- */
+.igdbBox {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.igdbBox__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.igdbBox__hint {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.igdbBox__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.igdbBox__error {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 0, 0, 0.06);
+  color: #b42318;
+  font-weight: 600;
+  font-size: 12px;
+}

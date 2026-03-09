@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import com.coleccion.videojuegos.entity.Videojuego;
 import com.coleccion.videojuegos.service.VideojuegosUsuarioService;
 import com.coleccion.videojuegos.utils.AuthorizationUtils;
+import com.coleccion.videojuegos.web.dto.VideojuegoDetalleDTO;
+import com.coleccion.videojuegos.web.requests.LinkIgdbRequest;
 import com.coleccion.videojuegos.web.requests.VideojuegoCompletoRequest;
 
 @RestController
@@ -38,6 +40,29 @@ public class VideojuegoUsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<Videojuego> getVideojuego(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(videojuegosService.getVideojuego(id));
+    }
+
+    /**
+     * ✅ Obtener un videojuego con datos extra IGDB (URLs de portada/arte) listo para el frontend.
+     * No rompe el endpoint original /{id}.
+     */
+    @PreAuthorize("@authorizationUtils.isOwner(#id, authentication.name)")
+    @GetMapping("/{id}/detalle")
+    public ResponseEntity<VideojuegoDetalleDTO> getVideojuegoDetalle(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(videojuegosService.getVideojuegoDetalle(id));
+    }
+
+    /**
+     * ✅ Enlazar un videojuego local con un juego de IGDB.
+     * Body: { "igdbGameId": 12345 }
+     */
+    @PreAuthorize("@authorizationUtils.isOwner(#id, authentication.name)")
+    @PutMapping("/{id}/igdb/link")
+    public ResponseEntity<Videojuego> linkIgdb(@PathVariable("id") Integer id,
+                                               @RequestBody LinkIgdbRequest request,
+                                               Authentication authentication) {
+        Videojuego updated = videojuegosService.linkIgdbGame(id, request.getIgdbGameId(), authentication.getName());
+        return ResponseEntity.ok(updated);
     }
 
     /** ✅ Crear un nuevo videojuego **/

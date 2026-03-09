@@ -1,9 +1,16 @@
 import "./GameInfo.css";
 import React, { useMemo, useState } from "react";
-import { Button, Modal, Switch, Timeline, Select, Empty } from "antd";
+import { Button, Modal, Switch, Timeline, Select, Empty, Divider, Typography } from "antd";
+import { linkIgdbGame } from "../../api/gamesApi";
+import IgdbLinkModal from "../IgdbLinkModal/IgdbLinkModal";
 
-const GameInfo = ({ game }) => {
+const { Text } = Typography;
+
+const GameInfo = ({ game, onIgdbLinked }) => {
   const [isModalOpen, setIsModalOpen] = useState([false, false]);
+  const [igdbModalOpen, setIgdbModalOpen] = useState(false);
+  const [igdbLinkLoading, setIgdbLinkLoading] = useState(false);
+  const [igdbLinkError, setIgdbLinkError] = useState("");
   const [selectedSoporteIndex, setSelectedSoporteIndex] = useState(0);
 
   const progresos = Array.isArray(game?.progreso) ? game.progreso : [];
@@ -39,11 +46,89 @@ const GameInfo = ({ game }) => {
 
   if (!game) return null;
 
+  const hasIgdb = !!game.igdbGameId || !!game.igdbUrl;
+
+  const handleIgdbSelect = async (igdbItem) => {
+    const localId = game?.id;
+    const igdbId = igdbItem?.id;
+    if (!localId || !igdbId) return;
+
+    setIgdbLinkLoading(true);
+    setIgdbLinkError("");
+    try {
+      await linkIgdbGame(localId, igdbId);
+      setIgdbModalOpen(false);
+      onIgdbLinked?.();
+    } catch (e) {
+      setIgdbLinkError("No se pudo vincular con IGDB.");
+    } finally {
+      setIgdbLinkLoading(false);
+    }
+  };
+
   return (
     <div className="gameInfo">
       <div className="gameTitle">
         <h1>{game.nombre}</h1>
       </div>
+
+      {/* IGDB: attribution + linking */}
+      <div className="igdbBox">
+        <div className="igdbBox__row">
+          <div>
+            <Text strong>IGDB</Text>
+            <div className="igdbBox__hint">
+              <Text type="secondary">Games metadata is powered by </Text>
+              <a href="https://www.igdb.com/" target="_blank" rel="noreferrer">
+                IGDB.com
+              </a>
+              <Text type="secondary">.</Text>
+            </div>
+          </div>
+
+          <div className="igdbBox__actions">
+            {game.igdbUrl ? (
+              <Button type="default" href={game.igdbUrl} target="_blank" rel="noreferrer">
+                View on IGDB.com
+              </Button>
+            ) : null}
+
+            <Button
+              type={hasIgdb ? "default" : "primary"}
+              loading={igdbLinkLoading}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIgdbModalOpen(true);
+              }}
+            >
+              {hasIgdb ? "Cambiar vínculo" : "Vincular con IGDB"}
+            </Button>
+          </div>
+        </div>
+
+        {igdbLinkError ? <div className="igdbBox__error">{igdbLinkError}</div> : null}
+      </div>
+
+      <IgdbLinkModal
+        open={igdbModalOpen}
+        initialQuery={game?.nombre}
+        existingIgdbGameId={game?.igdbGameId}
+        onCancel={() => setIgdbModalOpen(false)}
+        onSelect={handleIgdbSelect}
+      />
+
+      {igdbLinkLoading ? (
+        <div style={{ marginBottom: 8 }}>
+          <Text type="secondary">Vinculando con IGDB...</Text>
+        </div>
+      ) : null}
+      {igdbLinkLoading ? (
+        <div style={{ marginBottom: 8 }}>
+          <Text type="secondary">Vinculando con IGDB...</Text>
+        </div>
+      ) : null}
+
+      <Divider style={{ margin: "12px 0" }} />
 
       <div>
         <div className="gameInfoRow">

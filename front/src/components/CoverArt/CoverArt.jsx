@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./CoverArt.css";
 
 function hashToInt(str = "") {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
     h = (h << 5) - h + str.charCodeAt(i);
-    h |= 0; // 32-bit
+    h |= 0;
   }
   return Math.abs(h);
 }
@@ -15,11 +15,7 @@ function pickInitials(name = "") {
   if (!s) return "VG";
 
   const words = s.split(/\s+/).filter(Boolean);
-  if (words.length === 1) {
-    // 1 palabra: 2 primeras letras
-    return words[0].slice(0, 2).toUpperCase();
-  }
-  // 2+ palabras: iniciales de las dos primeras
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
   return (words[0][0] + words[1][0]).toUpperCase();
 }
 
@@ -35,7 +31,6 @@ function platformLabel(platform = "") {
 }
 
 function platformAccent(platform = "") {
-  // Solo acento (no fondo dominante)
   switch (String(platform).toLowerCase()) {
     case "ps": return "#1f4cff";
     case "xbox": return "#107c10";
@@ -46,13 +41,27 @@ function platformAccent(platform = "") {
   }
 }
 
+// ✅ TU TOKEN REAL
+function getJwtToken() {
+  return localStorage.getItem("auth_jwt") || "";
+}
+
+// ✅ Convierte /api/... a http://localhost:8080/api/...
+function resolveApiUrl(url = "") {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+
+  const base = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080";
+  // url suele venir como "/api/..."
+  return base.replace(/\/$/, "") + url;
+}
+
 export default function CoverArt({ title, platform, coverUrl }) {
   const { bg, accent, initials, label } = useMemo(() => {
     const base = hashToInt(title);
     const h1 = base % 360;
     const h2 = (h1 + 38) % 360;
 
-    // Un gradiente suave con buena legibilidad (premium)
     const c1 = `hsl(${h1} 70% 55%)`;
     const c2 = `hsl(${h2} 70% 42%)`;
 
@@ -64,11 +73,63 @@ export default function CoverArt({ title, platform, coverUrl }) {
     };
   }, [title, platform]);
 
+  const [blobSrc, setBlobSrc] = useState(null);
+
+  useEffect(() => {
+    let objectUrl = null;
+    const controller = new AbortController();
+
+    async function loadCoverAsBlob() {
+      if (!coverUrl) {
+        setBlobSrc(null);
+        return;
+      }
+
+      try {
+        const token = getJwtToken();
+        const finalUrl = resolveApiUrl(coverUrl);
+
+        const res = await fetch(finalUrl, {
+          method: "GET",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          throw new Error(`Cover fetch failed: ${res.status}`);
+        }
+
+        const blob = await res.blob();
+        objectUrl = URL.createObjectURL(blob);
+        setBlobSrc(objectUrl);
+      } catch (e) {
+        // ✅ Ignoramos abort de React 18 en dev
+        if (e?.name === "AbortError") return;
+
+        console.error("CoverArt: could not load cover image", e);
+        setBlobSrc(null);
+      }
+    }
+
+    loadCoverAsBlob();
+
+    return () => {
+      controller.abort();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [coverUrl]);
+
+  const showImage = Boolean(blobSrc);
+
   return (
     <div className="coverArt" style={{ ["--accent"]: accent, background: bg }}>
-      {/* Si en el futuro hay coverUrl (IGDB o manual), se mostrará automáticamente */}
-      {coverUrl ? (
-        <img className="coverArt__img" src={coverUrl} alt={`Cover ${title}`} />
+      {showImage ? (
+        <img
+          className="coverArt__img"
+          src={blobSrc}
+          alt={`Cover ${title}`}
+          loading="lazy"
+        />
       ) : (
         <>
           <div className="coverArt__overlay" />
