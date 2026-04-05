@@ -12,13 +12,15 @@ import { faPlaystation, faXbox, faSteam } from "@fortawesome/free-brands-svg-ico
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useAuthedImageBlob } from "../../hooks/useAuthedImageBlob";
 
-const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
-  const spineRef = useRef(null); // medimos desde el lomo (como tu código original)
+const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose, onEdit }) => {
+  const spineRef = useRef(null);
 
-  const [isAnimating, setIsAnimating] = useState(false); // controla CSS .animated
+  const [isAnimating, setIsAnimating] = useState(false);
   const [isHover, setIsHover] = useState(false);
+  const [isReturning, setIsReturning] = useState(false);
+  const returnTimerRef = useRef(null);
   const [position, setPosition] = useState({});
-  const [positionIni, setPositionIni] = useState(null); // DOMRect del lomo en estantería
+  const [positionIni, setPositionIni] = useState(null);
   const [isFlipped, setIsFlipped] = useState(false);
 
   const [detail, setDetail] = useState(null);
@@ -121,6 +123,9 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
 
   const handleMouseLeave = () => {
     setIsHover(false);
+    setIsReturning(true);
+    clearTimeout(returnTimerRef.current);
+    returnTimerRef.current = setTimeout(() => setIsReturning(false), 550);
   };
 
   const handleSpineClick = (e) => {
@@ -228,7 +233,7 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
 
 
   return (
-    <div className="game-container">
+    <div className={`game-container ${isReturning ? "returning" : ""}`}>
       <div
         className={`cube ${isAnimating ? "animated" : ""} ${isHover ? "hover" : ""}`}
         onMouseEnter={handleMouseEnter}
@@ -249,7 +254,9 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
                 <div className={`coverClosed cover-${platform}`}>
                   <div className="coverTop">
                     <span className="coverPill">{labelPlataforma(platform)}</span>
-                    <span className="coverPill coverPillMuted">{game?.genero ?? "—"}</span>
+                    <span className="coverPill coverPillMuted">
+                      {game?.generos?.length ? game.generos[0].replace(/_/g, " ") : "—"}
+                    </span>
                   </div>
 
                   <div className="coverCenter">
@@ -315,7 +322,14 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose }) => {
                   </div>
 
                   <div className="rightActions">
-                    <button className="rightBtn" disabled>Editar juego</button>
+                    <button
+                      className="rightBtn"
+                      style={onEdit ? { cursor: "pointer", opacity: 1 } : undefined}
+                      disabled={!onEdit}
+                      onClick={(e) => { e.stopPropagation(); onEdit?.(); }}
+                    >
+                      Editar juego
+                    </button>
                     <button className="rightBtn" disabled>Añadir progreso</button>
                     <button className="rightBtn" disabled>Añadir soporte</button>
                   </div>

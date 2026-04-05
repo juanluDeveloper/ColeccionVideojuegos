@@ -1,0 +1,100 @@
+/* Layout del formulario */
+.gfm-row {
+  display: flex;
+  gap: 16px;
+}
+
+.gfm-half {
+  flex: 1 1 0;
+}
+
+.game-form-modal .ant-modal-body {
+  padding-top: 20px;
+  padding-bottom: 8px;
+}
+
+.game-form-modal .ant-form-item {
+  margin-bottom: 18px;
+}
+
+/* ============ IGDB AutoComplete ============ */
+
+/* Dropdown option row */
+.gfm-ac-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+/* Cover thumbnail in dropdown */
+.gfm-ac-thumb {
+  width: 30px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.gfm-ac-thumb-empty {
+  width: 30px;
+  height: 40px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Name + year block */
+.gfm-ac-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+
+.gfm-ac-name {
+  font-weight: 500;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gfm-ac-year {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+/* Wider dropdown to fit thumbnails */
+.gfm-ac-dropdown {
+  min-width: 400px !important;
+}
+
+.gfm-ac-dropdown .ant-select-item-option-content {
+  padding: 2px 0;
+}
+
+/* Badge shown below input when linked */
+.gfm-igdb-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.gfm-igdb-badge-remove {
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.35);
+  transition: color 0.2s;
+}
+
+.gfm-igdb-badge-remove:hover {
+  color: #ff4d4f;
+}

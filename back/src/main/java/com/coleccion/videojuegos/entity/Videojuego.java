@@ -2,7 +2,9 @@ package com.coleccion.videojuegos.entity;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import com.coleccion.videojuegos.entity.Enums.Genero;
 import com.coleccion.videojuegos.entity.Enums.Plataforma;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -40,9 +42,12 @@ public class Videojuego {
     @Column(name="PLATAFORMA")
     private Plataforma plataforma;
 
+    @ElementCollection(targetClass = Genero.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "VIDEOJUEGO_GENEROS", joinColumns = @JoinColumn(name = "VIDEOJUEGO_ID"))
     @Enumerated(EnumType.STRING)
-    @Column(name="GENERO")
-    private Genero genero;
+    @Column(name = "GENERO")
+    @Builder.Default
+    private Set<Genero> generos = new HashSet<>();
 
     @OneToMany(mappedBy = "videojuego", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

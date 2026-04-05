@@ -69,7 +69,7 @@ public class VideojuegosAdminService {
             .fechaLanzamiento(vRequest.getFechaLanzamiento())
             .fechaCompra(vRequest.getFechaCompra())
             .plataforma(vRequest.getPlataforma())
-            .genero(vRequest.getGenero())
+            .generos(vRequest.getGeneros())
             .usuario(usuario) // Asignamos el usuario encontrado
             .build();
 
@@ -124,7 +124,8 @@ public class VideojuegosAdminService {
         videojuego.setFechaLanzamiento(vRequest.getFechaLanzamiento());
         videojuego.setFechaCompra(vRequest.getFechaCompra());
         videojuego.setPlataforma(vRequest.getPlataforma());
-        videojuego.setGenero(vRequest.getGenero());
+        videojuego.getGeneros().clear();
+        videojuego.getGeneros().addAll(vRequest.getGeneros());
 
         // 2️⃣ Actualizar Progresos (conversión de DTO a entidad)
         videojuego.getProgreso().clear();

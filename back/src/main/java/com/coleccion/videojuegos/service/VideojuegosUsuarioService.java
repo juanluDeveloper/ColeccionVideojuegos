@@ -109,7 +109,7 @@ public class VideojuegosUsuarioService {
                 v.getFechaLanzamiento(),
                 v.getFechaCompra(),
                 v.getPlataforma(),
-                v.getGenero(),
+                v.getGeneros(),
                 v.getProgreso(),
                 v.getSoporte(),
                 v.getIgdbGameId(),
@@ -130,7 +130,7 @@ public class VideojuegosUsuarioService {
                 .fechaLanzamiento(vRequest.getFechaLanzamiento())
                 .fechaCompra(vRequest.getFechaCompra())
                 .plataforma(vRequest.getPlataforma())
-                .genero(vRequest.getGenero())
+                .generos(vRequest.getGeneros())
                 .usuario(usuario)
                 .build();
 
@@ -165,7 +165,8 @@ public class VideojuegosUsuarioService {
         videojuego.setFechaLanzamiento(vRequest.getFechaLanzamiento());
         videojuego.setFechaCompra(vRequest.getFechaCompra());
         videojuego.setPlataforma(vRequest.getPlataforma());
-        videojuego.setGenero(vRequest.getGenero());
+        videojuego.getGeneros().clear();
+        videojuego.getGeneros().addAll(vRequest.getGeneros());
 
         videojuego.getProgreso().clear();
         if (vRequest.getProgreso() != null) {

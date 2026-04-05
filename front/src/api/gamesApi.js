@@ -43,6 +43,38 @@ export async function linkIgdbGame(localGameId, igdbGameId) {
   return data;
 }
 
+// --- CRUD videojuegos ---
+
+/**
+ * Crear un nuevo videojuego.
+ * POST /api/v1/videojuegos/new
+ * @param {Object} gameData - VideojuegoCompletoRequest
+ */
+export async function createGame(gameData) {
+  const { data } = await apiClient.post("/api/v1/videojuegos/new", gameData);
+  return data;
+}
+
+/**
+ * Editar un videojuego existente.
+ * PUT /api/v1/videojuegos/{id}/editar
+ * @param {number} id
+ * @param {Object} gameData - VideojuegoCompletoRequest
+ */
+export async function editGame(id, gameData) {
+  const { data } = await apiClient.put(`/api/v1/videojuegos/${id}/editar`, gameData);
+  return data;
+}
+
+/**
+ * Eliminar un videojuego.
+ * DELETE /api/v1/videojuegos/{id}/eliminar
+ */
+export async function deleteGame(id) {
+  const { data } = await apiClient.delete(`/api/v1/videojuegos/${id}/eliminar`);
+  return data;
+}
+
 export async function getSoportes(idVideojuego) {
   const { data } = await apiClient.get(`/api/v1/soporte/${idVideojuego}`);
   return data; // Soporte[]

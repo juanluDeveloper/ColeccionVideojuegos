@@ -7,9 +7,10 @@ import com.coleccion.videojuegos.entity.Enums.Plataforma;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Extended detail DTO used when we want IGDB ...
+ * Extended detail DTO used when we want IGDB data.
  */
 public record VideojuegoDetalleDTO(
         Integer id,
@@ -18,7 +19,7 @@ public record VideojuegoDetalleDTO(
         Date fechaLanzamiento,
         Date fechaCompra,
         Plataforma plataforma,
-        Genero genero,
+        Set<Genero> generos,
         List<Progreso> progreso,
         List<Soporte> soporte,
 

@@ -2,6 +2,7 @@ package com.coleccion.videojuegos.web.requests;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 import com.coleccion.videojuegos.entity.Enums.*;
 import com.coleccion.videojuegos.web.dto.ProgresoDTO;
 import com.coleccion.videojuegos.web.dto.SoporteDTO;
@@ -29,7 +30,8 @@ public class VideojuegoCompletoRequest {
     private Plataforma plataforma;
 
     @NotNull(message = "El género es obligatorio")
-    private Genero genero;
+    @Size(min = 1, message = "Debe seleccionar al menos un género")
+    private Set<Genero> generos;
 
     // ⚡ Ya NO incluimos el campo "tipo" aquí porque pertenece a Soporte
 

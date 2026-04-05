@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { platformLabel, platformAccent } from "../../utils/platformUtils";
 import "./CoverArt.css";
 
 function hashToInt(str = "") {
@@ -17,28 +18,6 @@ function pickInitials(name = "") {
   const words = s.split(/\s+/).filter(Boolean);
   if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
   return (words[0][0] + words[1][0]).toUpperCase();
-}
-
-function platformLabel(platform = "") {
-  switch (String(platform).toLowerCase()) {
-    case "ps": return "PlayStation";
-    case "xbox": return "Xbox";
-    case "pc": return "PC";
-    case "ds": return "Nintendo DS";
-    case "switch":
-    default: return "Switch";
-  }
-}
-
-function platformAccent(platform = "") {
-  switch (String(platform).toLowerCase()) {
-    case "ps": return "#1f4cff";
-    case "xbox": return "#107c10";
-    case "pc": return "#222222";
-    case "ds": return "#444444";
-    case "switch":
-    default: return "#e60012";
-  }
 }
 
 // ✅ TU TOKEN REAL

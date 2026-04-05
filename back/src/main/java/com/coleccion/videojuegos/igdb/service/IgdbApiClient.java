@@ -34,7 +34,7 @@ public class IgdbApiClient {
 
         String body = """
                 search \"%s\";
-                fields id,name,slug,cover.image_id,artworks.image_id,screenshots.image_id;
+                fields id,name,slug,cover.image_id,artworks.image_id,screenshots.image_id,platforms.name,genres.name,first_release_date;
                 limit %d;
                 """.formatted(safeQuery, safeLimit);
 
@@ -44,7 +44,7 @@ public class IgdbApiClient {
 
     public IgdbGame getGameById(long igdbGameId) {
         String body = """
-                fields id,name,slug,cover.image_id,artworks.image_id,screenshots.image_id;
+                fields id,name,slug,cover.image_id,artworks.image_id,screenshots.image_id,platforms.name,genres.name,first_release_date;
                 where id = %d;
                 limit 1;
                 """.formatted(igdbGameId);

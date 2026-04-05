@@ -2,6 +2,7 @@ package com.coleccion.videojuegos.web.dto;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.coleccion.videojuegos.entity.Progreso;
 import com.coleccion.videojuegos.entity.Soporte;
@@ -23,7 +24,7 @@ public class VideojuegoAdminDTO {
     private Date fechaLanzamiento;
     private Date fechaCompra;
     private Plataforma plataforma;
-    private Genero genero;
+    private Set<Genero> generos;
     private List<Progreso> progreso;
     private List<Soporte> soporte;
     private UserDTO usuario;
@@ -36,7 +37,7 @@ public class VideojuegoAdminDTO {
         this.fechaLanzamiento = videojuego.getFechaLanzamiento();
         this.fechaCompra = videojuego.getFechaCompra();
         this.plataforma = videojuego.getPlataforma();
-        this.genero = videojuego.getGenero();
+        this.generos = videojuego.getGeneros();
         this.progreso = videojuego.getProgreso();
         this.soporte = videojuego.getSoporte();
         this.usuario = new UserDTO(

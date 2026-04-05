@@ -3,7 +3,7 @@ package com.coleccion.videojuegos.igdb.dto;
 import java.util.List;
 
 /**
- * Minimal IGDB Game response for our use case (covers/artworks).
+ * IGDB Game response — covers, artworks, platforms, genres and release date.
  */
 public record IgdbGame(
         long id,
@@ -11,5 +11,8 @@ public record IgdbGame(
         String slug,
         IgdbImageRef cover,
         List<IgdbImageRef> artworks,
-        List<IgdbImageRef> screenshots
+        List<IgdbImageRef> screenshots,
+        List<IgdbPlatform> platforms,
+        List<IgdbGenre> genres,
+        Long first_release_date
 ) {}

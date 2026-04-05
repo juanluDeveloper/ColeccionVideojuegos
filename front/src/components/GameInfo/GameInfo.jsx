@@ -122,11 +122,6 @@ const GameInfo = ({ game, onIgdbLinked }) => {
           <Text type="secondary">Vinculando con IGDB...</Text>
         </div>
       ) : null}
-      {igdbLinkLoading ? (
-        <div style={{ marginBottom: 8 }}>
-          <Text type="secondary">Vinculando con IGDB...</Text>
-        </div>
-      ) : null}
 
       <Divider style={{ margin: "12px 0" }} />
 
@@ -152,8 +147,8 @@ const GameInfo = ({ game, onIgdbLinked }) => {
         </div>
 
         <div className="gameInfoRow">
-          <span>Género:</span>
-          <span>{game.genero ?? "—"}</span>
+          <span>Género(s):</span>
+          <span>{game.generos?.length ? game.generos.map(g => g.replace(/_/g, " ")).join(", ") : "—"}</span>
         </div>
 
         {/* PROGRESO */}

@@ -9,7 +9,7 @@
   gap: 12px;
   margin-bottom: 12px;
 
-  flex-wrap: wrap; /* ✅ si no cabe, baja */
+  flex-wrap: wrap;
 }
 
 .library-toolbar-left{
@@ -18,7 +18,7 @@
   gap: 12px;
   flex-wrap: wrap;
 
-  flex: 1 1 420px; /* ✅ en pantallas estrechas se adapta */
+  flex: 1 1 420px;
 }
 
 .library-toolbar-right{
@@ -35,7 +35,6 @@
     width: 100%;
   }
 
-  /* opcional: inputs/selects al 100% en móvil */
   .library-toolbar-left input,
   .library-toolbar-left .ant-select{
     width: 100% !important;
@@ -44,41 +43,24 @@
 
 
 /* =========================
-   SHELF AREA (ESTANTERÍA REAL)
+   SHELF AREA (ESTANTERIA)
    ========================= */
 
-/*
-  La clave para que NO haya juegos flotantes:
-  - Las filas tienen que “medir” siempre lo mismo.
-  - Dibujamos las baldas como un fondo repetido,
-    con el MISMO alto de fila que usa el flex-wrap.
-*/
-
 .shelf-area{
-  /* medidas base */
-  --bookH: 40vh;           /* ✅ coincide con el alto del lomo (Game.css) */
-  --rowGap: 70px;          /* ✅ separación vertical entre baldas */
-  --boardH: 14px;          /* grosor balda */
-  --sideW: 14px;           /* grosor laterales */
-  --padTop: 18px;          /* padding interior arriba */
-  --padBottom: 18px;       /* padding interior abajo */
-
-  --rowH: calc(var(--bookH) + var(--rowGap)); /* ✅ alto TOTAL por fila */
+  --boardH: 14px;
+  --sideW: 14px;
+  --padTop: 18px;
+  --padBottom: 18px;
+  --rowGap: 50px;
 
   position: relative;
   border-radius: 18px;
 
-  /* dejamos margen interno para laterales */
   padding: var(--padTop) calc(var(--sideW) + 16px) var(--padBottom);
 
-  /* Fondo suave interior */
   background-color: rgba(0,0,0,0.02);
 
-  /* ✅ 3 capas de fondo:
-     1) lateral izquierdo madera
-     2) lateral derecho madera
-     3) baldas repetidas (una por fila)
-  */
+  /* Solo laterales de madera */
   background-image:
     linear-gradient(to right,
       rgba(210,184,159,0.75) 0%,
@@ -89,37 +71,24 @@
       rgba(210,184,159,0.75) 0%,
       rgba(231,215,197,0.85) 40%,
       rgba(210,184,159,0.75) 100%
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent calc(var(--rowH) - var(--boardH)),
-      rgba(231,215,197,0.95) calc(var(--rowH) - var(--boardH)),
-      rgba(210,184,159,0.95) var(--rowH)
     );
 
-  background-repeat:
-    no-repeat,
-    no-repeat,
-    repeat;
+  background-repeat: no-repeat, no-repeat;
 
   background-size:
     var(--sideW) 100%,
-    var(--sideW) 100%,
-    100% var(--rowH);
+    var(--sideW) 100%;
 
   background-position:
     left top,
-    right top,
-    left var(--padTop);
+    right top;
 
-  /* un poco de profundidad */
   box-shadow:
     inset 0 0 0 1px rgba(0,0,0,0.03),
     0 10px 30px rgba(0,0,0,0.08);
 }
 
-/* ✅ “tapa” superior de la estantería */
+/* tapa superior */
 .shelf-area::before{
   content: "";
   position: absolute;
@@ -136,9 +105,10 @@
     inset 0 2px 0 rgba(255,255,255,0.55);
 
   pointer-events: none;
+  z-index: 5;
 }
 
-/* ✅ base inferior (para cerrar la estantería) */
+/* base inferior (siempre fija abajo, detras de los juegos) */
 .shelf-area::after{
   content: "";
   position: absolute;
@@ -155,34 +125,69 @@
     inset 0 2px 0 rgba(255,255,255,0.55);
 
   pointer-events: none;
+  z-index: 3;
 }
 
 
 /* =========================
-   LIBRERÍA (WRAP CORRECTO)
+   BALDAS DINAMICAS (DOM)
    ========================= */
 
+/* Balda intermedia (entre filas) */
+.shelf-board{
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--boardH);
+
+  background: linear-gradient(180deg,
+    rgba(231,215,197, 0.95) 0%,
+    rgba(210,184,159, 0.95) 100%
+  );
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.45);
+
+  pointer-events: none;
+  z-index: 3;
+}
+
+
+
+/* =========================
+   LIBRERIA (FLEX WRAP)
+   ========================= */
+
+/*
+  IMPORTANTE: NO ponemos z-index en .libreria.
+  Si lo ponemos, crea un stacking context y los hijos
+  (juegos con hover) nunca podran superar a los .shelf-board
+  hermanos. Sin z-index en .libreria, cada .game-container
+  puede manejar su propia capa libremente.
+*/
 .libreria{
   display: flex;
-  flex-wrap: wrap;                /* ✅ baja a otra fila */
-  align-items: flex-end;          /* ✅ libros apoyados abajo */
+  flex-wrap: wrap;
+  align-items: flex-end;
 
-  /* ✅ IMPORTANTE: el row-gap debe ser el mismo que el diseño de baldas */
   column-gap: 6px;
   row-gap: var(--rowGap);
 
   justify-content: flex-start;
 
   position: relative;
-  z-index: 2; /* por encima de los fondos */
 }
 
-/* ✅ cada Game mantiene su tamaño natural */
+/* cada Game mantiene su tamano natural */
 .libreria > *{
   flex: 0 0 auto;
   width: fit-content;
 
-  /* ✅ Esto hace que el lomo quede “apoyado” sobre la tabla,
-     SIN translate raro que se acumule por filas */
-  margin-bottom: 6px;
+  /*
+    z-index base por encima de las baldas (3),
+    para que los libros en reposo se vean sobre la madera.
+    Al hacer hover se elevara mas via .cube.hover
+  */
+  position: relative;
+  z-index: 4;
 }
