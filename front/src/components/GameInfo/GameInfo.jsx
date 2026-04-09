@@ -1,48 +1,36 @@
 import "./GameInfo.css";
-import React, { useMemo, useState } from "react";
-import { Button, Modal, Switch, Timeline, Select, Empty, Divider, Typography } from "antd";
+import React, { useState } from "react";
+import { Button, Typography } from "antd";
 import { linkIgdbGame } from "../../api/gamesApi";
 import IgdbLinkModal from "../IgdbLinkModal/IgdbLinkModal";
 
 const { Text } = Typography;
 
+function formatDateDMY(dateLike) {
+  if (!dateLike) return "—";
+  const s = String(dateLike);
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+  const d = new Date(s);
+  if (!isNaN(d)) {
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    return `${dd}-${mm}-${d.getFullYear()}`;
+  }
+  return s;
+}
+
+function formatYear(dateLike) {
+  if (!dateLike) return "—";
+  const s = String(dateLike);
+  const m = s.match(/^(\d{4})/);
+  return m ? m[1] : "—";
+}
+
 const GameInfo = ({ game, onIgdbLinked }) => {
-  const [isModalOpen, setIsModalOpen] = useState([false, false]);
   const [igdbModalOpen, setIgdbModalOpen] = useState(false);
   const [igdbLinkLoading, setIgdbLinkLoading] = useState(false);
   const [igdbLinkError, setIgdbLinkError] = useState("");
-  const [selectedSoporteIndex, setSelectedSoporteIndex] = useState(0);
-
-  const progresos = Array.isArray(game?.progreso) ? game.progreso : [];
-  const soportes = Array.isArray(game?.soporte) ? game.soporte : [];
-
-  const lastProgreso = progresos.length ? progresos[progresos.length - 1] : null;
-
-  const timelineItems = useMemo(() => {
-    if (!progresos.length) return [];
-    return progresos.map((p) => ({
-      children: `${p.anyoJugado ?? "—"} · ${p.avance ?? "—"} · ${p.horasJugadas ?? 0}h · ${
-        p.completadoCien ? "100%" : "—"
-      } · Nota: ${p.nota ?? "—"}`,
-    }));
-  }, [progresos]);
-
-  const soporteOptions = useMemo(() => {
-    return soportes.map((s, idx) => ({
-      value: idx,
-      label: `${idx + 1}) ${s.tipo ?? "—"}${s.estado ? " · " + s.estado : ""}${s.edicion ? " · " + s.edicion : ""}`,
-    }));
-  }, [soportes]);
-
-  const selectedSoporte = soportes[selectedSoporteIndex] || null;
-
-  const butonOnClick = (idx, target) => {
-    setIsModalOpen((p) => {
-      const next = [...p];
-      next[idx] = target;
-      return next;
-    });
-  };
 
   if (!game) return null;
 
@@ -66,34 +54,74 @@ const GameInfo = ({ game, onIgdbLinked }) => {
     }
   };
 
+  const generos = Array.isArray(game.generos) ? game.generos : [];
+
   return (
     <div className="gameInfo">
-      <div className="gameTitle">
-        <h1>{game.nombre}</h1>
+      {/* Cabecera */}
+      <div className="gi-header">
+        <h2 className="gi-title" title={game.nombre}>{game.nombre}</h2>
+        <div className="gi-subtitle">
+          <span className="gi-badge gi-badge--platform">
+            {String(game.plataforma ?? "—").replace(/_/g, " ")}
+          </span>
+          <span className="gi-year">{formatYear(game.fechaLanzamiento)}</span>
+        </div>
       </div>
 
-      {/* IGDB: attribution + linking */}
-      <div className="igdbBox">
-        <div className="igdbBox__row">
-          <div>
-            <Text strong>IGDB</Text>
-            <div className="igdbBox__hint">
-              <Text type="secondary">Games metadata is powered by </Text>
-              <a href="https://www.igdb.com/" target="_blank" rel="noreferrer">
-                IGDB.com
-              </a>
-              <Text type="secondary">.</Text>
+      {/* Ficha */}
+      <div className="gi-section">
+        <div className="gi-sectionTitle">Ficha</div>
+
+        <div className="gi-fieldGrid">
+          <div className="gi-field">
+            <span className="gi-fieldLabel">Lanzamiento</span>
+            <span className="gi-fieldValue">{formatDateDMY(game.fechaLanzamiento)}</span>
+          </div>
+          <div className="gi-field">
+            <span className="gi-fieldLabel">Compra</span>
+            <span className="gi-fieldValue">{formatDateDMY(game.fechaCompra)}</span>
+          </div>
+          <div className="gi-field">
+            <span className="gi-fieldLabel">Precio</span>
+            <span className="gi-fieldValue">
+              {game.precio != null ? `${game.precio} €` : "—"}
+            </span>
+          </div>
+        </div>
+
+        <div className="gi-field gi-field--full">
+          <span className="gi-fieldLabel">Géneros</span>
+          <div className="gi-chips">
+            {generos.length ? (
+              generos.map((g, i) => (
+                <span key={i} className="gi-chip">{g.replace(/_/g, " ")}</span>
+              ))
+            ) : (
+              <span className="gi-fieldValue">—</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* IGDB compacto */}
+      <div className="gi-section gi-igdb">
+        <div className="gi-igdbRow">
+          <div className="gi-igdbLeft">
+            <Text strong style={{ color: "rgba(0,0,0,.85)" }}>IGDB</Text>
+            <div className="gi-igdbHint">
+              Powered by{" "}
+              <a href="https://www.igdb.com/" target="_blank" rel="noreferrer">IGDB.com</a>
             </div>
           </div>
-
-          <div className="igdbBox__actions">
+          <div className="gi-igdbActions">
             {game.igdbUrl ? (
-              <Button type="default" href={game.igdbUrl} target="_blank" rel="noreferrer">
-                View on IGDB.com
+              <Button size="small" href={game.igdbUrl} target="_blank" rel="noreferrer">
+                Ver en IGDB
               </Button>
             ) : null}
-
             <Button
+              size="small"
               type={hasIgdb ? "default" : "primary"}
               loading={igdbLinkLoading}
               onClick={(e) => {
@@ -101,12 +129,11 @@ const GameInfo = ({ game, onIgdbLinked }) => {
                 setIgdbModalOpen(true);
               }}
             >
-              {hasIgdb ? "Cambiar vínculo" : "Vincular con IGDB"}
+              {hasIgdb ? "Cambiar" : "Vincular"}
             </Button>
           </div>
         </div>
-
-        {igdbLinkError ? <div className="igdbBox__error">{igdbLinkError}</div> : null}
+        {igdbLinkError ? <div className="gi-igdbError">{igdbLinkError}</div> : null}
       </div>
 
       <IgdbLinkModal
@@ -116,159 +143,6 @@ const GameInfo = ({ game, onIgdbLinked }) => {
         onCancel={() => setIgdbModalOpen(false)}
         onSelect={handleIgdbSelect}
       />
-
-      {igdbLinkLoading ? (
-        <div style={{ marginBottom: 8 }}>
-          <Text type="secondary">Vinculando con IGDB...</Text>
-        </div>
-      ) : null}
-
-      <Divider style={{ margin: "12px 0" }} />
-
-      <div>
-        <div className="gameInfoRow">
-          <span>Precio:</span>
-          <span>{game.precio ?? "—"}</span>
-        </div>
-
-        <div className="gameInfoRow">
-          <span>Fecha de lanzamiento:</span>
-          <span>{game.fechaLanzamiento ?? "—"}</span>
-        </div>
-
-        <div className="gameInfoRow">
-          <span>Fecha compra:</span>
-          <span>{game.fechaCompra ?? "—"}</span>
-        </div>
-
-        <div className="gameInfoRow">
-          <span>Plataforma:</span>
-          <span>{game.plataforma ?? "—"}</span>
-        </div>
-
-        <div className="gameInfoRow">
-          <span>Género(s):</span>
-          <span>{game.generos?.length ? game.generos.map(g => g.replace(/_/g, " ")).join(", ") : "—"}</span>
-        </div>
-
-        {/* PROGRESO */}
-        <div className="gameInfoRow">
-          <span>Progresos:</span>
-          <span>{progresos.length ? `${progresos.length} registro(s)` : "—"}</span>
-          <div>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                butonOnClick(0, true);
-              }}
-              disabled={!progresos.length}
-            >
-              Detalles
-            </Button>
-          </div>
-        </div>
-
-        <Modal
-          title="Progreso del juego"
-          cancelButtonProps={{ style: { display: "none" } }}
-          open={isModalOpen[0]}
-          centered
-          closable={false}
-          onOk={(e) => {
-            e.stopPropagation();
-            butonOnClick(0, false);
-          }}
-        >
-          <div className="statusBar">
-            {progresos.length ? <Timeline items={timelineItems} /> : <Empty description="No hay progresos registrados" />}
-          </div>
-        </Modal>
-
-        {/* SOPORTES */}
-        <div className="gameInfoRow">
-          <span>Soportes:</span>
-          <span>{soportes.length ? `${soportes.length} copia(s)` : "—"}</span>
-          <div>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                butonOnClick(1, true);
-              }}
-              disabled={!soportes.length}
-            >
-              Detalles
-            </Button>
-          </div>
-        </div>
-
-        <Modal
-          title="Detalles del soporte"
-          cancelButtonProps={{ style: { display: "none" } }}
-          open={isModalOpen[1]}
-          centered
-          closable={false}
-          onOk={(e) => {
-            e.stopPropagation();
-            butonOnClick(1, false);
-          }}
-        >
-          {!soportes.length ? (
-            <Empty description="No hay soportes registrados" />
-          ) : (
-            <div>
-              <div style={{ marginBottom: 12 }}>
-                <span style={{ marginRight: 8 }}>Seleccionar copia:</span>
-                <Select
-                  style={{ width: "100%" }}
-                  value={selectedSoporteIndex}
-                  options={soporteOptions}
-                  onChange={(idx) => setSelectedSoporteIndex(idx)}
-                />
-              </div>
-
-              <div className="gameInfoRow">
-                <span>Tipo:</span>
-                <span>{selectedSoporte?.tipo ?? "—"}</span>
-              </div>
-
-              <div className="gameInfoRow">
-                <span>Estado:</span>
-                <span>{selectedSoporte?.estado ?? "—"}</span>
-              </div>
-
-              <div className="gameInfoRow">
-                <span>Edición:</span>
-                <span>{selectedSoporte?.edicion ?? "—"}</span>
-              </div>
-
-              <div className="gameInfoRow">
-                <span>Distribución:</span>
-                <span>{selectedSoporte?.distribucion ?? "—"}</span>
-              </div>
-
-              <div className="gameInfoRow">
-                <span>Precintado:</span>
-                <Switch disabled checked={!!selectedSoporte?.precintado} />
-              </div>
-
-              <div className="gameInfoRow">
-                <span>Región:</span>
-                <span>{selectedSoporte?.region ?? "—"}</span>
-              </div>
-
-              <div className="gameInfoRow">
-                <span>Año de salida (dist.):</span>
-                <span>{selectedSoporte?.anyoSalidaDist ?? "—"}</span>
-              </div>
-
-              <div className="gameInfoRow">
-                <span>Tienda:</span>
-                <span>{selectedSoporte?.tienda ?? "—"}</span>
-              </div>
-            </div>
-          )}
-        </Modal>
-      </div>
     </div>
   );
 };

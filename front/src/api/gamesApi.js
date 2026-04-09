@@ -80,7 +80,37 @@ export async function getSoportes(idVideojuego) {
   return data; // Soporte[]
 }
 
+export async function createSoporte(idVideojuego, soporteData) {
+  const { data } = await apiClient.post(`/api/v1/soporte/${idVideojuego}/new`, soporteData);
+  return data;
+}
+
+export async function updateSoporte(idVideojuego, idSoporte, soporteData) {
+  const { data } = await apiClient.put(`/api/v1/soporte/${idVideojuego}/${idSoporte}/editar`, soporteData);
+  return data;
+}
+
+export async function deleteSoporte(idVideojuego, idSoporte) {
+  const { data } = await apiClient.delete(`/api/v1/soporte/${idVideojuego}/${idSoporte}/eliminar`);
+  return data;
+}
+
 export async function getProgresos(idVideojuego) {
   const { data } = await apiClient.get(`/api/v1/progreso/${idVideojuego}`);
   return data; // Progreso[]
+}
+
+export async function createProgreso(idVideojuego, progresoData) {
+  const { data } = await apiClient.post(`/api/v1/progreso/${idVideojuego}/new`, progresoData);
+  return data;
+}
+
+export async function updateProgreso(idVideojuego, idProgreso, progresoData) {
+  const { data } = await apiClient.put(`/api/v1/progreso/${idVideojuego}/${idProgreso}/editar`, progresoData);
+  return data;
+}
+
+export async function deleteProgreso(idVideojuego, idProgreso) {
+  const { data } = await apiClient.delete(`/api/v1/progreso/${idVideojuego}/${idProgreso}/eliminar`);
+  return data;
 }

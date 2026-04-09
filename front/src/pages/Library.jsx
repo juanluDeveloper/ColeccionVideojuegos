@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Game from "../components/Game/Game";
-import { getMyGames, getGameDetail } from "../api/gamesApi";
+import { getMyGames, getGameDetail, deleteGame } from "../api/gamesApi";
 import { Alert, Spin, Input, Select, Button } from "antd";
 import { AiOutlineSearch } from "react-icons/ai";
 import { mapPlataformaToFamily } from "../utils/platformUtils";
@@ -162,7 +162,7 @@ export default function Library() {
             style={{ width: 180 }}
             defaultValue="ALL"
             options={[
-              { value: "ALL", label: "Todos los generos" },
+              { value: "ALL", label: "Todos los géneros" },
             ]}
           />
         </div>
@@ -197,6 +197,8 @@ export default function Library() {
                 key={g.id}
                 gameId={g.id}
                 platform={mapPlataformaToFamily(g.plataforma)}
+                rawPlatform={g.plataforma}
+                spineDesign={getSpineDesign(g.plataforma)}
                 title={g.nombre}
                 game={g}
                 isOpen={openGameId === g.id}
@@ -206,6 +208,15 @@ export default function Library() {
                   setOpenGameId(null);
                   setEditingGame(g);
                   setFormOpen(true);
+                }}
+                onDelete={async () => {
+                  try {
+                    await deleteGame(g.id);
+                    setOpenGameId(null);
+                    setGames((prev) => prev.filter((x) => x.id !== g.id));
+                  } catch (e) {
+                    console.error("Error eliminando juego:", e);
+                  }
                 }}
               />
             ))}

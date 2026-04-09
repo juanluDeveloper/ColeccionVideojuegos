@@ -3,16 +3,23 @@ import "./Game.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logoSwitch from "../../assets/images/logo-switch.png";
 import logoDS from "../../assets/images/logo-ds.png";
+import logo3DS from "../../assets/images/logo-3ds.svg";
+import logoWiiU from "../../assets/images/logo-wiiu.svg";
+import logoWii from "../../assets/images/logo-wii.svg";
+import logoGameCube from "../../assets/images/logo-gamecube.svg";
 import logo from "../../assets/images/logo192.png";
 import GameInfo from "../GameInfo/GameInfo.jsx";
-import { getSoportes, getProgresos, getGameDetail } from "../../api/gamesApi";
+import { getSoportes, getProgresos, getGameDetail, createSoporte, updateSoporte, deleteSoporte, createProgreso, updateProgreso, deleteProgreso } from "../../api/gamesApi";
+import SoporteModal from "../SoporteModal/SoporteModal";
+import PlaythroughModal from "../PlaythroughModal/PlaythroughModal";
 import { Spin, Alert } from "antd";
 import CoverArt from "../CoverArt/CoverArt";
 import { faPlaystation, faXbox, faSteam } from "@fortawesome/free-brands-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { useAuthedImageBlob } from "../../hooks/useAuthedImageBlob";
 
-const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose, onEdit }) => {
+const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen, onOpen, onClose, onEdit, onDelete }) => {
   const spineRef = useRef(null);
 
   const [isAnimating, setIsAnimating] = useState(false);
@@ -26,6 +33,16 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose, onEdit }
   const [detail, setDetail] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState("");
+
+  // Modal añadir/editar soporte
+  const [soporteModalOpen, setSoporteModalOpen] = useState(false);
+  const [soporteLoading, setSoporteLoading] = useState(false);
+  const [editingSoporte, setEditingSoporte] = useState(null); // null = crear, objeto = editar
+
+  // Modal añadir/editar playthrough
+  const [playthroughModalOpen, setPlaythroughModalOpen] = useState(false);
+  const [playthroughLoading, setPlaythroughLoading] = useState(false);
+  const [editingPlaythrough, setEditingPlaythrough] = useState(null);
 
   // Abrir/cerrar controlado SOLO por isOpen (estado global)
   useEffect(() => {
@@ -140,35 +157,52 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose, onEdit }
     setIsFlipped((v) => !v);
   };
 
+  // CSS custom properties from spineDesign — override family defaults per platform
+  // Solo aplicamos override a ps, xbox y pc. DS y Switch conservan su diseño original.
+  const useSpineOverride = spineDesign && (platform === "ps" || platform === "xbox" || platform === "pc");
+  const spineVars = useSpineOverride
+    ? {
+        "--spine-top": spineDesign.spineTop,
+        "--spine-bottom": spineDesign.spineBottom,
+        "--text-top": spineDesign.textTop,
+        "--text-bottom": spineDesign.textBottom,
+      }
+    : {};
+
+  // Per-platform label (PS2, PS3, 360, One, etc.) instead of generic "PS" / "XBOX"
+  const spineLabel = useSpineOverride
+    ? (spineDesign?.label || platform?.toUpperCase() || "")
+    : undefined; // ds/switch usan su label original
+
   const renderPlatformIcon = (platform) => {
     switch (platform) {
       case "ps":
         return (
-          <div className={`front ps ${isAnimating ? "animated" : ""}`}>
+          <div className={`front ps ${isAnimating ? "animated" : ""}`} style={spineVars} data-plat={rawPlatform}>
             <div className="platform ps">
               <div className="icon ps">
-                  <FontAwesomeIcon icon={faPlaystation} size="xl" style={{ color: "#ffffff" }} />
+                  <FontAwesomeIcon icon={faPlaystation} size="xl" style={{ color: "var(--text-top, #ffffff)" }} />
               </div>
-              <div> PS</div>
+              <div> {spineLabel || "PS"}</div>
             </div>
             <div className="title ps">{title}</div>
           </div>
         );
       case "xbox":
         return (
-          <div className={`front xbox ${isAnimating ? "animated" : ""}`}>
+          <div className={`front xbox ${isAnimating ? "animated" : ""}`} style={spineVars}>
             <div className="platform xbox">
               <div className="icon xbox">
-                <FontAwesomeIcon icon={faXbox} style={{ color: "#ffffff" }} />
+                <FontAwesomeIcon icon={faXbox} style={{ color: "var(--text-top, #ffffff)" }} />
               </div>
-              <div> XBOX</div>
+              <div className="xbox-label"> {spineLabel || "XBOX"}</div>
             </div>
             <div className="title xbox">{title}</div>
           </div>
         );
       case "pc":
         return (
-          <div className={`front pc ${isAnimating ? "animated" : ""}`}>
+          <div className={`front pc ${isAnimating ? "animated" : ""}`} style={spineVars}>
             <div className="platform pc">
               <div className="icon pc">
                 <FontAwesomeIcon icon={faSteam} size="xl" />
@@ -188,9 +222,53 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose, onEdit }
             <div className="title ds">{title}</div>
           </div>
         );
+      case "n3ds":
+        return (
+          <div className={`front n3ds ${isAnimating ? "animated" : ""}`}>
+            <div className="platform n3ds">
+              <div className="icon n3ds">
+                <img src={logo3DS} alt="Nintendo 3DS" />
+              </div>
+            </div>
+            <div className="title n3ds">{title}</div>
+          </div>
+        );
+      case "gamecube":
+        return (
+          <div className={`front gamecube ${isAnimating ? "animated" : ""}`}>
+            <div className="platform gamecube">
+              <div className="icon gamecube">
+                <img src={logoGameCube} alt="GameCube" />
+              </div>
+            </div>
+            <div className="title gamecube">{title}</div>
+          </div>
+        );
+      case "wii":
+        return (
+          <div className={`front wii ${isAnimating ? "animated" : ""}`}>
+            <div className="platform wii">
+              <div className="icon wii">
+                <img src={logoWii} alt="Wii" style={{ width: "100%", height: "auto" }} />
+              </div>
+            </div>
+            <div className="title wii">{title}</div>
+          </div>
+        );
+      case "wiiu":
+        return (
+          <div className={`front wiiu ${isAnimating ? "animated" : ""}`}>
+            <div className="platform wiiu">
+              <div className="icon wiiu">
+                <img src={logoWiiU} alt="Wii U" style={{ width: "100%", height: "auto" }} />
+              </div>
+            </div>
+            <div className="title wiiu">{title}</div>
+          </div>
+        );
       default:
         return (
-          <div className={`front switch ${isAnimating ? "animated" : ""}`}>
+          <div className={`front switch ${isAnimating ? "animated" : ""}`} data-plat={rawPlatform}>
             <div className="platform switch">
               <div className="icon switch">
                 <img src={logoSwitch} alt="Logo" style={{ width: "100%", height: "auto" }} />
@@ -210,6 +288,10 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose, onEdit }
     xbox: logo,
     pc: logo,
     ds: logoDS,
+    n3ds: logo3DS,
+    gamecube: logoGameCube,
+    wii: logoWii,
+    wiiu: logoWiiU,
     switch: logoSwitch,
   };
   const diskLogo = diskLogoByPlatform[platform] || logoSwitch;
@@ -226,6 +308,15 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose, onEdit }
     }
     if (platform === "ds") {
       return <img src={logoDS} alt="Disk" className="diskImg" />;
+    }
+    if (platform === "gamecube") {
+      return <img src={logoGameCube} alt="Disk" className="diskImg" />;
+    }
+    if (platform === "wii") {
+      return <img src={logoWii} alt="Disk" className="diskImg" />;
+    }
+    if (platform === "wiiu") {
+      return <img src={logoWiiU} alt="Disk" className="diskImg" />;
     }
     return <img src={logoSwitch} alt="Disk" className="diskImg" />;
   };
@@ -246,39 +337,32 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose, onEdit }
         </div>
 
         {/* PANEL ABIERTO */}
-        <div className={`left ${platform} ${isAnimating ? "animated" : ""}`}>
+        <div className={`left ${platform} ${isAnimating ? "animated" : ""}`} data-plat={rawPlatform}>
           <div className="card-container" onClick={handleCardClick}>
             <div className="book" onClick={handleCardClick}>
               {/* PORTADA CERRADA */}
-              <div className={`page frontCard ${isFlipped ? "flipped" : ""}`}>
+              <div
+                className={`page frontCard ${isFlipped ? "flipped" : ""}`}
+                style={
+                  artworkBlob
+                    ? {
+                        backgroundImage: `linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.65)), url(${artworkBlob})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }
+                    : undefined
+                }
+              >
                 <div className={`coverClosed cover-${platform}`}>
-                  <div className="coverTop">
-                    <span className="coverPill">{labelPlataforma(platform)}</span>
-                    <span className="coverPill coverPillMuted">
-                      {game?.generos?.length ? game.generos[0].replace(/_/g, " ") : "—"}
-                    </span>
-                  </div>
-
                   <div className="coverCenter">
-                  <div className={`coverSlot ${platform}`}>
-                    <CoverArt
-                      title={merged?.nombre ?? title}
-                      platform={platform}
-                      coverUrl={merged?.coverUrl} // Usamos URL de portada si está disponible
-                    />
-                  </div>
+                    <div className={`coverSlot ${platform}`}>
+                      <CoverArt
+                        title={merged?.nombre ?? title}
+                        platform={platform}
+                        coverUrl={merged?.coverUrl}
+                      />
+                    </div>
                     <h2 className="coverTitle">{merged?.nombre ?? title}</h2>
-                  </div>
-
-                  <div className="coverBottom">
-                    <div className="coverMeta">
-                      <span className="coverMetaLabel">Lanz.</span>
-                      <span className="coverMetaValue">{fmtYear(merged?.fechaLanzamiento)}</span>
-                    </div>
-                    <div className="coverMeta">
-                      <span className="coverMetaLabel">Compra</span>
-                      <span className="coverMetaValue">{fmtDate(merged?.fechaCompra)}</span>
-                    </div>
                   </div>
 
                   <div className="coverShine" />
@@ -287,7 +371,7 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose, onEdit }
 
               {/* PÁGINA IZQUIERDA (INFO) */}
               <div className={`page middleCard ${isFlipped ? "flipped" : ""}`}>
-                <div className="pageContent">
+                <div className="pageContent" onClick={(e) => e.stopPropagation()}>
                   {detailLoading && <Spin />}
                   {detailError && <Alert type="error" message={detailError} />}
                   {!detailLoading && !detailError && (
@@ -302,45 +386,202 @@ const Game = ({ platform, title, gameId, game, isOpen, onOpen, onClose, onEdit }
                 </div>
               </div>
 
-              {/* PÁGINA DERECHA (CONTRAPORTADA + DISCO) */}
+              {/* PÁGINA DERECHA — Historial + Acciones */}
               <div className="page backCard">
-                <div
-                  className="rightPage"
-                  style={
-                    artworkBlob
-                      ? {
-                          backgroundImage: `linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)), url(${artworkBlob})`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }
-                      : undefined
-                  }
-                >
-                  <div className="rightTop">
-                    <div className="rightTitle">Acciones</div>
-                    <div className="rightHint">Próximamente</div>
+                <div className="rp" onClick={(e) => e.stopPropagation()}>
+                  {/* Soportes (mis copias) */}
+                  <div className="rp-section">
+                    <div className="rp-sectionTitle">Mis copias</div>
+                    {(merged?.soporte?.length ?? 0) === 0 ? (
+                      <div className="rp-empty">Sin copias registradas</div>
+                    ) : (
+                      <div className="rp-cards">
+                        {merged.soporte.map((s, i) => (
+                          <div key={s.id ?? i} className="rp-card">
+                            <div className="rp-cardRow">
+                              <span className="rp-tag">{s.tipo?.replace(/_/g, " ") ?? "—"}</span>
+                              {s.precintado && <span className="rp-tag rp-tag--accent">Precintado</span>}
+                              <button
+                                className="rp-cardEdit"
+                                title="Editar copia"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingSoporte(s);
+                                  setSoporteModalOpen(true);
+                                }}
+                              >
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                              </button>
+                              <button
+                                className="rp-cardDelete"
+                                title="Eliminar copia"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const resolvedId = gameId ?? game?.id;
+                                  if (!resolvedId || !s.id) return;
+                                  if (window.confirm("¿Eliminar esta copia?")) {
+                                    deleteSoporte(resolvedId, s.id)
+                                      .then(() => reloadDetail(resolvedId))
+                                      .catch((err) => console.error("Error eliminando soporte:", err));
+                                  }
+                                }}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                            <div className="rp-cardDetails">
+                              {s.edicion && <span>{s.edicion.replace(/_/g, " ")}</span>}
+                              {s.estado && <span>{s.estado.replace(/_/g, " ")}</span>}
+                              {s.region && <span>{s.region}</span>}
+                              {s.distribucion && <span>{s.distribucion.replace(/_/g, " ")}</span>}
+                              {s.tienda && <span>{s.tienda.replace(/_/g, " ")}</span>}
+                              {s.anyoSalidaDist && <span>{s.anyoSalidaDist}</span>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  <div className="rightActions">
+                  {/* Playthroughs */}
+                  <div className="rp-section">
+                    <div className="rp-sectionTitle">Mis playthroughs</div>
+                    {(merged?.progreso?.length ?? 0) === 0 ? (
+                      <div className="rp-empty">Sin playthroughs registrados</div>
+                    ) : (
+                      <div className="rp-cards">
+                        {merged.progreso.map((p, i) => (
+                          <div key={p.id ?? i} className="rp-card rp-card--play">
+                            <div className="rp-cardRow">
+                              <span className="rp-tag">{p.avance?.replace(/_/g, " ") ?? "—"}</span>
+                              {p.completadoCien && <span className="rp-tag rp-tag--gold">100%</span>}
+                              <button
+                                className="rp-cardEdit"
+                                title="Editar playthrough"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingPlaythrough(p);
+                                  setPlaythroughModalOpen(true);
+                                }}
+                              >
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                              </button>
+                              <button
+                                className="rp-cardDelete"
+                                title="Eliminar playthrough"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const resolvedId = gameId ?? game?.id;
+                                  if (!resolvedId || !p.id) return;
+                                  if (window.confirm("¿Eliminar este playthrough?")) {
+                                    deleteProgreso(resolvedId, p.id)
+                                      .then(() => reloadDetail(resolvedId))
+                                      .catch((err) => console.error("Error eliminando playthrough:", err));
+                                  }
+                                }}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                            <div className="rp-cardDetails">
+                              {p.anyoJugado != null && <span>Año: {p.anyoJugado}</span>}
+                              {p.horasJugadas != null && <span>{p.horasJugadas}h</span>}
+                              {p.nota != null && <span>Nota: {p.nota}</span>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Acciones */}
+                  <div className="rp-actions">
                     <button
-                      className="rightBtn"
+                      className="rp-btn rp-btn--primary"
                       style={onEdit ? { cursor: "pointer", opacity: 1 } : undefined}
                       disabled={!onEdit}
                       onClick={(e) => { e.stopPropagation(); onEdit?.(); }}
                     >
                       Editar juego
                     </button>
-                    <button className="rightBtn" disabled>Añadir progreso</button>
-                    <button className="rightBtn" disabled>Añadir soporte</button>
+                    <button
+                      className="rp-btn rp-btn--primary"
+                      style={{ cursor: "pointer", opacity: 1 }}
+                      onClick={(e) => { e.stopPropagation(); setEditingPlaythrough(null); setPlaythroughModalOpen(true); }}
+                    >
+                      Añadir playthrough
+                    </button>
+                    <button
+                      className="rp-btn rp-btn--primary"
+                      style={{ cursor: "pointer", opacity: 1 }}
+                      onClick={(e) => { e.stopPropagation(); setEditingSoporte(null); setSoporteModalOpen(true); }}
+                    >
+                      Añadir soporte
+                    </button>
+                    <button
+                      className="rp-btn rp-btn--danger"
+                      style={onDelete ? { cursor: "pointer", opacity: 1 } : undefined}
+                      disabled={!onDelete}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm(`¿Eliminar "${merged?.nombre ?? title}"? Esta acción no se puede deshacer.`)) {
+                          onDelete?.();
+                        }
+                      }}
+                    >
+                      Eliminar juego
+                    </button>
                   </div>
-
-                  {/* Disco decorativo pequeñín abajo derecha */}
-                  <div className="diskSmall">
-                    <div className="diskInner">
-                      {renderDisk()}
-                    </div>
-                    <div className="circle"></div>
-                  </div>
+                  <SoporteModal
+                    open={soporteModalOpen}
+                    loading={soporteLoading}
+                    initialValues={editingSoporte}
+                    onCancel={() => { setSoporteModalOpen(false); setEditingSoporte(null); }}
+                    onSubmit={async (values) => {
+                      const resolvedId = gameId ?? game?.id;
+                      if (!resolvedId) return;
+                      setSoporteLoading(true);
+                      try {
+                        if (editingSoporte?.id) {
+                          await updateSoporte(resolvedId, editingSoporte.id, values);
+                        } else {
+                          await createSoporte(resolvedId, values);
+                        }
+                        setSoporteModalOpen(false);
+                        setEditingSoporte(null);
+                        reloadDetail(resolvedId);
+                      } catch (e) {
+                        console.error("Error guardando soporte:", e);
+                      } finally {
+                        setSoporteLoading(false);
+                      }
+                    }}
+                  />
+                  <PlaythroughModal
+                    open={playthroughModalOpen}
+                    loading={playthroughLoading}
+                    initialValues={editingPlaythrough}
+                    onCancel={() => { setPlaythroughModalOpen(false); setEditingPlaythrough(null); }}
+                    onSubmit={async (values) => {
+                      const resolvedId = gameId ?? game?.id;
+                      if (!resolvedId) return;
+                      setPlaythroughLoading(true);
+                      try {
+                        if (editingPlaythrough?.id) {
+                          await updateProgreso(resolvedId, editingPlaythrough.id, values);
+                        } else {
+                          await createProgreso(resolvedId, values);
+                        }
+                        setPlaythroughModalOpen(false);
+                        setEditingPlaythrough(null);
+                        reloadDetail(resolvedId);
+                      } catch (e) {
+                        console.error("Error guardando playthrough:", e);
+                      } finally {
+                        setPlaythroughLoading(false);
+                      }
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -380,8 +621,17 @@ function labelPlataforma(platform) {
     case "xbox": return "Xbox";
     case "pc": return "PC";
     case "ds": return "Nintendo DS";
-    default: return "Switch";
+    case "gamecube": return "GameCube";
+    case "wii": return "Wii";
+    case "wiiu": return "Wii U";
+    default: return "Nintendo";
   }
+}
+
+/** Etiqueta legible a partir del enum raw del backend */
+function rawPlatformLabel(raw) {
+  if (!raw) return "—";
+  return String(raw).replace(/_/g, " ");
 }
 
 function fmtYear(dateLike) {
@@ -395,7 +645,15 @@ function fmtYear(dateLike) {
 function fmtDate(dateLike) {
   if (!dateLike) return "—";
   const s = String(dateLike);
-  // si viene "YYYY-MM-DD" lo dejamos así por ahora
+  // formato dd-mm-yyyy
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+  const d = new Date(s);
+  if (!isNaN(d)) {
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    return `${dd}-${mm}-${d.getFullYear()}`;
+  }
   return s;
 }
 

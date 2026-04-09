@@ -89,6 +89,8 @@
   justify-content: center;
   border: 2px solid black;
   background: white;
+  border-radius: 14px;
+  overflow: hidden;
   transition: transform 1s ease-in-out, z-index 1s ease-in-out;
 }
 
@@ -96,7 +98,10 @@
 .frontCard {
   z-index: 2;
   transform-origin: left;
-  background-color: white;
+  background-color: #1a1a1a;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255,255,255,0.08);
   padding: 10px;
   box-sizing: border-box;
 }
@@ -160,8 +165,8 @@
 }
 
 /* ✅ FIX: anchos consistentes, nada de vw */
-.front.ps{ width: clamp(44px, 52px, 58px); }
-.front.xbox{ width: clamp(44px, 52px, 58px); }
+.front.ps{ width: clamp(38px, 46px, 52px); }
+.front.xbox{ width: clamp(38px, 46px, 52px); }
 .front.pc{ width: clamp(38px, 46px, 52px); }
 
 /* Switch más fina */
@@ -175,6 +180,173 @@
   width: clamp(54px, 62px, 70px);
   height: 31.76vh;
   grid-template-rows: 30% 70%;
+}
+
+/* 3DS: misma altura que DS pero un poco más delgada */
+.front.n3ds{
+  width: clamp(40px, 48px, 54px);
+  height: 31.76vh;
+  grid-template-rows: 30% 70%;
+}
+.left.n3ds { height: 31.76vh; }
+.platform.n3ds {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+}
+.icon.n3ds {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+}
+.icon.n3ds img {
+  max-width: none !important;
+  max-height: none !important;
+  width: auto !important;
+  height: 8px !important;
+  transform: rotate(90deg);
+  margin: 8px 0;
+}
+.title.n3ds {
+  background-color: white;
+  color: black;
+  font-weight: bold;
+}
+
+/* PSX: jewel case CD, mismas dimensiones que DS */
+.front.ps[data-plat="PSX"]{
+  width: clamp(54px, 62px, 70px);
+  height: 31.76vh;
+}
+
+/* Wii U: caja Blu-ray azul celeste, lomo entero azul con título blanco */
+.front.wiiu{
+  width: clamp(38px, 46px, 52px);
+  grid-template-rows: 22% 78%;
+}
+
+.platform.wiiu {
+  background-color: #009ac7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-bottom: 1px solid white;
+
+}
+
+.icon.wiiu {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+.icon.wiiu img {
+  width: auto;
+  height: 100%;
+  transform: rotate(90deg);
+}
+
+.title.wiiu {
+  background-color: #009ac7;
+  color: white;
+}
+
+.left.wiiu {
+  height: 40vh;
+}
+
+/* Wii: caja blanca, lomo entero blanco con logo y texto gris */
+.front.wii{
+  width: clamp(38px, 46px, 52px);
+  grid-template-rows: 22% 78%;
+}
+
+.platform.wii {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.icon.wii {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+.icon.wii img {
+  width: auto;
+  height: 100%;
+  transform: rotate(90deg);
+}
+
+.title.wii {
+  background-color: #ffffff;
+  color: #555555;
+}
+
+.left.wii {
+  height: 40vh;
+}
+
+/* GameCube: caja DVD pequeña, lomo oscuro morado con logo y título lavanda */
+.front.gamecube{
+  width: clamp(38px, 46px, 52px);
+}
+
+.platform.gamecube {
+  background-color: #2a1a52;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.icon.gamecube {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+.icon.gamecube img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 2.1vh;
+  width: auto;
+  max-width: none;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
+.title.gamecube {
+  background-color: #3d2870;
+  color: #e0d0ff;
+}
+
+.left.gamecube {
+  height: 40vh;
 }
 
 .left {
@@ -191,6 +363,18 @@
   height: 31.76vh;
 }
 
+.left.ps[data-plat="PSX"] {
+  height: 31.76vh;
+}
+
+/* PSP: un pelín más bajo que PS2 */
+.front.ps[data-plat="PSP"] { height: 36vh; }
+.left.ps[data-plat="PSP"] { height: 36vh; }
+
+/* PSVita: aprox. 3/4 de altura respecto a PSP */
+.front.ps[data-plat="PSVita"] { height: 32vh; }
+.left.ps[data-plat="PSVita"] { height: 32vh; }
+
 .front.animated {
   width: 0px;
   height: 60vh;
@@ -198,10 +382,26 @@
 }
 
 .left.animated{
-  width: clamp(380px, 32vw, 560px);
+  width: clamp(340px, 28vw, 460px);
   height: 60vh;
   transform: rotateY(0deg);
 }
+
+/* ✅ Al abrir la carátula, todas las plataformas usan la misma altura común
+   para que la portada se lea bien, sin importar el tamaño del lomo cerrado. */
+.front.animated,
+.front.ps[data-plat="PSP"].animated,
+.front.ps[data-plat="PSVita"].animated,
+.front.ps[data-plat="PSX"].animated,
+.front.ds.animated,
+.front.n3ds.animated { height: 60vh; }
+
+.left.animated,
+.left.ps[data-plat="PSP"].animated,
+.left.ps[data-plat="PSVita"].animated,
+.left.ps[data-plat="PSX"].animated,
+.left.ds.animated,
+.left.n3ds.animated { height: 60vh; }
 
 
 .game-container {
@@ -236,14 +436,19 @@
 }
 
 .icon.ds,
+.icon.n3ds,
 .icon.pc,
 .icon.ps {
   margin: 0;
 }
 
+/* ============================
+   PLATFORM BAR (zona superior)
+   Usa CSS var --spine-top / --text-top con fallback al color original de la familia
+   ============================ */
 .platform.ps {
-  background-color: blue;
-  color: white;
+  background-color: var(--spine-top, blue);
+  color: var(--text-top, white);
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -254,8 +459,8 @@
 }
 
 .platform.xbox {
-  background-color: #3d3435;
-  color: white;
+  background-color: var(--spine-top, #3d3435);
+  color: var(--text-top, white);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -263,23 +468,32 @@
   font-size: larger;
 }
 
+.xbox-label {
+  margin-bottom: 6px;
+}
+
 .platform.ds {
   background-color: white;
 }
 
 .platform.pc {
-  background-color: white;
-  color: black;
+  background-color: var(--spine-top, white);
+  color: var(--text-top, black);
   align-items: center;
 }
 
+/* ============================
+   TITLE BAR (zona inferior del lomo)
+   Usa CSS var --spine-bottom / --text-bottom con fallback al original
+   ============================ */
 .title.ps {
-  background-color: beige;
-  color: black;
+  background-color: var(--spine-bottom, beige);
+  color: var(--text-bottom, black);
 }
 
 .title.xbox {
-  background-color: #3d3435;
+  background-color: var(--spine-bottom, #3d3435);
+  color: var(--text-bottom, white);
 }
 
 .title.ds {
@@ -289,8 +503,8 @@
 }
 
 .title.pc {
-  background-color: #3d3435;
-  color: white;
+  background-color: var(--spine-bottom, #3d3435);
+  color: var(--text-bottom, white);
 }
 
 .image {
@@ -375,21 +589,52 @@ img{
 /* ===== Portada cerrada ===== */
 .coverClosed{
   position: relative;
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   height: 100%;
-  padding: 18px;
+  margin: 0 auto;
+  padding: 0 0 8px;
+  background: transparent !important;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
 }
 
+/* Cover gradients: these are the family fallbacks; per-platform overrides
+   come via inline style from spineDesign.coverGrad in Game.jsx */
 .cover-ps { background: linear-gradient(180deg, #0b3d91 0%, #071a3a 100%); }
 .cover-xbox { background: linear-gradient(180deg, #107c10 0%, #0a3d0a 100%); }
 .cover-pc { background: linear-gradient(180deg, #3d3435 0%, #1f1a1a 100%); }
 .cover-ds { background: linear-gradient(180deg, #f2f2f2 0%, #dcdcdc 100%); }
 .cover-switch { background: linear-gradient(180deg, #e60012 0%, #8a000a 100%); }
+
+/* GameCube cover: morado oscuro */
+.cover-gamecube { background: linear-gradient(180deg, #4b2d8e 0%, #2a1a52 100%); }
+
+/* Wii cover: blanco/gris suave */
+.cover-wii { background: linear-gradient(180deg, #f2f2f2 0%, #dcdcdc 100%); }
+
+/* Wii U cover */
+.cover-wiiu { background: linear-gradient(180deg, #009ac7 0%, #006d8e 100%); }
+
+/* Covers con fondo claro necesitan texto oscuro */
+.coverClosed.cover-ds .coverPill,
+.coverClosed.cover-ds .coverTitle,
+.coverClosed.cover-ds .coverMeta,
+.coverClosed.cover-wii .coverPill,
+.coverClosed.cover-wii .coverTitle,
+.coverClosed.cover-wii .coverMeta {
+  color: rgba(0,0,0,0.85);
+}
+.coverClosed.cover-ds .coverPill,
+.coverClosed.cover-wii .coverPill {
+  background: rgba(0,0,0,0.08);
+  color: rgba(0,0,0,0.78);
+  border-color: rgba(0,0,0,0.12);
+}
 
 .coverTop{
   display: flex;
@@ -416,16 +661,19 @@ img{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding-top: 10px;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 0;
+  width: fit-content;
+  height: 100%;
 }
 
 .coverArt{
-  width: 82%;
-  aspect-ratio: 1 / 1;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.92);
-  border: 2px solid rgba(0,0,0,0.25);
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: transparent;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -493,84 +741,196 @@ img{
   box-sizing: border-box;
 }
 
-/* Página derecha tipo “contraportada” */
-.rightPage{
-  position: relative;
+/* ===== Hoja derecha — Historial + Acciones ===== */
+.rp {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   width: 100%;
   height: 100%;
-  padding: 22px;
+  padding: 20px;
   box-sizing: border-box;
+  overflow-y: auto;
+  color: rgba(0,0,0,0.85);
 }
 
-.rightTop{
+.rp-section {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 14px;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.rightTitle{
-  font-size: 16px;
+.rp-sectionTitle {
+  font-size: 11px;
   font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.55;
 }
 
-.rightHint{
+.rp-empty {
   font-size: 12px;
-  opacity: 0.6;
+  opacity: 0.5;
+  font-style: italic;
+  padding: 6px 0;
 }
 
-.rightActions{
-  display: grid;
-  gap: 10px;
-  max-width: 240px;
+/* Mini-cards de soporte / progreso */
+.rp-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.rightBtn{
-  border: 1px solid rgba(0,0,0,0.15);
-  background: rgba(255,255,255,0.9);
+.rp-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   padding: 10px 12px;
   border-radius: 10px;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.07);
+}
+
+.rp-card--play {
+  background: rgba(42,62,234,0.04);
+  border-color: rgba(42,62,234,0.10);
+}
+
+.rp-cardRow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.rp-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(0,0,0,0.08);
+  color: rgba(0,0,0,0.75);
+}
+
+.rp-tag--accent {
+  background: rgba(42,62,234,0.12);
+  color: #1c2bb1;
+}
+
+.rp-tag--gold {
+  background: rgba(218,165,32,0.18);
+  color: #8b6c12;
+}
+
+/* Botones editar/eliminar dentro de cada card de soporte/playthrough */
+.rp-cardEdit {
+  margin-left: auto;
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  font-size: 12px;
+  color: rgba(0,0,0,0.3);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color .15s, background .15s;
+  line-height: 1;
+}
+
+.rp-cardEdit:hover {
+  color: #1c2bb1;
+  background: rgba(42,62,234,0.1);
+}
+
+.rp-cardDelete {
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  font-size: 12px;
+  color: rgba(0,0,0,0.3);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color .15s, background .15s;
+  line-height: 1;
+}
+
+.rp-cardDelete:hover {
+  color: #b42318;
+  background: rgba(180,35,24,0.1);
+}
+
+.rp-cardDetails {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: rgba(0,0,0,0.62);
+}
+
+.rp-cardDetails span::after {
+  content: “·”;
+  margin-left: 8px;
+  opacity: 0.4;
+}
+.rp-cardDetails span:last-child::after {
+  content: “”;
+}
+
+/* Acciones al pie */
+.rp-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rp-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.04);
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(0,0,0,0.72);
   cursor: not-allowed;
   opacity: 0.7;
+  transition: opacity .15s, background .15s;
 }
 
-/* Disco pequeño abajo derecha */
-.diskSmall{
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  width: 140px;
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.rp-btn--primary {
+  background: #1c2bb1;
+  color: #fff;
+  border-color: transparent;
+  opacity: 1;
+  cursor: pointer;
 }
 
-.diskSmall img{
-  width: 100%;
-  height: auto;
-  border-radius: 9999px;
-  animation: spin 7s linear infinite;
-  border: black 3px solid;
+.rp-btn--primary:hover {
+  background: #2a3eea;
 }
 
-.diskSmall .circle{
-  position: absolute;
-  background-color: #f0f0f0;
-  border-radius: 9999px;
-  border: black 3px solid;
-  width: 18%;
-  height: 18%;
+.rp-btn--danger {
+  background: rgba(180, 35, 24, 0.08);
+  color: #b42318;
+  border-color: rgba(180, 35, 24, 0.2);
+  opacity: 1;
+  cursor: pointer;
 }
 
+.rp-btn--danger:hover {
+  background: rgba(180, 35, 24, 0.15);
+}
 
-@keyframes spin {
-  from{
-    transform: rotateZ(0deg);
-  }
-  to{
-    transform: rotateZ(360deg);
-  }
+/* Scrollbar discreta */
+.rp::-webkit-scrollbar {
+  width: 6px;
+}
+.rp::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.18);
+  border-radius: 3px;
 }
 
 /* =========================
@@ -593,20 +953,23 @@ img{
 
 /* ✅ Slot real de carátula (2:3) */
 .coverSlot{
-  width: clamp(160px, 70%, 230px);
+  width: auto;
+  height: 100%;
+  max-height: 100%;
+  max-width: 100%;
   aspect-ratio: 2 / 3;                 /* ✅ carátula real */
-  border-radius: 18px;
+  border-radius: 14px;
 
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0,0,0,.35);
-  border: 1px solid rgba(255,255,255,.18);
+  border: none;
 
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(2px);
+  background: rgba(255,255,255,0.04);
 
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 1 auto;
 }
 
 /* ✅ El componente CoverArt ocupa TODO el slot */
@@ -628,58 +991,4 @@ img{
   gap: 16px;
 }
 
-/* ✅ Contraportada premium (derecha) */
-.rightPage{
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: 22px;
-  box-sizing: border-box;
-
-  background: radial-gradient(circle at 20% 10%, rgba(255,255,255,.08), rgba(255,255,255,0) 60%);
-}
-
-.rightActions{
-  display: grid;
-  gap: 10px;
-  max-width: 270px;
-
-  padding: 14px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.18);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 14px 30px rgba(0,0,0,0.18);
-}
-
-.rightBtn{
-  border: 1px solid rgba(255,255,255,0.20);
-  background: rgba(255,255,255,0.86);
-  padding: 11px 14px;
-  border-radius: 12px;
-
-  font-weight: 700;
-  text-align: left;
-
-  cursor: not-allowed;
-  opacity: 0.65;
-}
-
-.rightBtn:hover{
-  opacity: 0.72;
-}
-
-/* ✅ Disco menos “pegatina” y más watermark premium */
-.diskSmall{
-  opacity: 0.92;
-  filter: saturate(1.05);
-}
-
-.diskSmall img{
-  border: 1px solid rgba(255,255,255,0.22);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.30);
-}
-
-.diskSmall .circle{
-  border: 1px solid rgba(255,255,255,0.25);
-}
+/* (estilos de hoja derecha movidos al bloque .rp más arriba) */

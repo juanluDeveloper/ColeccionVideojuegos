@@ -57,10 +57,10 @@ const SPINE_DESIGNS = {
     family: "ps",
     label: "PS3",
     // PAL: lomo negro arriba (logo PS3), blanco abajo (título negro)
-    spineTop: "#1e1e1e",
-    spineBottom: "#f5f5f5",
-    textTop: "#ffffff",
-    textBottom: "#1e1e1e",
+    spineTop: "#f5f5f5",
+    spineBottom: "#1e1e1e",
+    textTop: "#1e1e1e",
+    textBottom: "#ffffff",
     accent: "#cc0000",
     coverGrad: "linear-gradient(180deg, #2a2a2a 0%, #111111 100%)",
     width: "normal",
@@ -111,7 +111,7 @@ const SPINE_DESIGNS = {
 
   PSVita: {
     family: "ps",
-    label: "Vita",
+    label: "PSVita",
     // Caja azul (como PS4 pero más pequeña)
     spineTop: "#003087",
     spineBottom: "#003087",
