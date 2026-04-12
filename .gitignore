@@ -98,8 +98,7 @@ yarn-error.log*
 .pnp.js
 
 ### testing ###
-/coverage
-
+front/storage/igdb
 ### production ###
 /build
 

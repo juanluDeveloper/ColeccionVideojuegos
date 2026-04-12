@@ -78,16 +78,6 @@ const GameInfo = ({ game, onIgdbLinked }) => {
             <span className="gi-fieldLabel">Lanzamiento</span>
             <span className="gi-fieldValue">{formatDateDMY(game.fechaLanzamiento)}</span>
           </div>
-          <div className="gi-field">
-            <span className="gi-fieldLabel">Compra</span>
-            <span className="gi-fieldValue">{formatDateDMY(game.fechaCompra)}</span>
-          </div>
-          <div className="gi-field">
-            <span className="gi-fieldLabel">Precio</span>
-            <span className="gi-fieldValue">
-              {game.precio != null ? `${game.precio} €` : "—"}
-            </span>
-          </div>
         </div>
 
         <div className="gi-field gi-field--full">

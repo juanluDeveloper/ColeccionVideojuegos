@@ -29,14 +29,8 @@ public class Videojuego {
     @Column(name = "NOMBRE", nullable = false)
     private String nombre;
 
-    @Column(name="PRECIO")
-    private Float precio;
-
     @Column(name="FECHA_LANZAMIENTO")
     private Date fechaLanzamiento;
-
-    @Column(name="FECHA_COMPRA")
-    private Date fechaCompra;
 
     @Enumerated(EnumType.STRING)
     @Column(name="PLATAFORMA")

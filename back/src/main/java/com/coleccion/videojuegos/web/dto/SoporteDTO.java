@@ -18,4 +18,6 @@ public class SoporteDTO {
     private Region region;
     private Integer anyoSalidaDist;
     private Tienda tienda;
+    private Float precio;
+    private java.sql.Date fechaCompra;
 }

@@ -20,11 +20,7 @@ public class VideojuegoCompletoRequest {
     @Size(min = 1, max = 255, message = "El nombre debe tener entre 1 y 255 caracteres")
     private String nombre;
 
-    @Positive(message = "El precio debe ser positivo")
-    private Float precio;
-
     private Date fechaLanzamiento;
-    private Date fechaCompra;
 
     @NotNull(message = "La plataforma es obligatoria")
     private Plataforma plataforma;

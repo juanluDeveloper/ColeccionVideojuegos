@@ -20,9 +20,7 @@ public class VideojuegoAdminDTO {
     
     private Integer id;
     private String nombre;
-    private Float precio;
     private Date fechaLanzamiento;
-    private Date fechaCompra;
     private Plataforma plataforma;
     private Set<Genero> generos;
     private List<Progreso> progreso;
@@ -33,9 +31,7 @@ public class VideojuegoAdminDTO {
     public VideojuegoAdminDTO(Videojuego videojuego, Usuario usuario) {
         this.id = videojuego.getId();
         this.nombre = videojuego.getNombre();
-        this.precio = videojuego.getPrecio();
         this.fechaLanzamiento = videojuego.getFechaLanzamiento();
-        this.fechaCompra = videojuego.getFechaCompra();
         this.plataforma = videojuego.getPlataforma();
         this.generos = videojuego.getGeneros();
         this.progreso = videojuego.getProgreso();

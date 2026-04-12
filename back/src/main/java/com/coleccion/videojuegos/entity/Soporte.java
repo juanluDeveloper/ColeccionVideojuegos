@@ -53,6 +53,12 @@ public class Soporte {
     @Column(name = "TIENDA")
     private Tienda tienda;
 
+    @Column(name = "PRECIO")
+    private Float precio;
+
+    @Column(name = "FECHA_COMPRA")
+    private java.sql.Date fechaCompra;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "ID_VIDEOJUEGO")

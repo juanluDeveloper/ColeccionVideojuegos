@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Select, Switch, InputNumber } from "antd";
+import { Modal, Form, Select, Switch, InputNumber, DatePicker } from "antd";
+import dayjs from "dayjs";
 
 const TIPO = ["Fisico", "Digital"];
 const ESTADO = ["Perfecto", "Muy_bueno", "Bueno", "Meh", "Mal", "Roto"];
@@ -35,6 +36,8 @@ const SoporteModal = ({ open, onCancel, onSubmit, loading, initialValues }) => {
           region: initialValues.region ?? undefined,
           tienda: initialValues.tienda ?? undefined,
           anyoSalidaDist: initialValues.anyoSalidaDist ?? undefined,
+          precio: initialValues.precio ?? undefined,
+          fechaCompra: initialValues.fechaCompra ? dayjs(initialValues.fechaCompra) : undefined,
           precintado: !!initialValues.precintado,
         });
       } else {
@@ -46,6 +49,10 @@ const SoporteModal = ({ open, onCancel, onSubmit, loading, initialValues }) => {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
+      // Convertir dayjs a string YYYY-MM-DD para el backend
+      if (values.fechaCompra) {
+        values.fechaCompra = values.fechaCompra.format("YYYY-MM-DD");
+      }
       await onSubmit(values);
       form.resetFields();
     } catch {
@@ -104,6 +111,14 @@ const SoporteModal = ({ open, onCancel, onSubmit, loading, initialValues }) => {
 
         <Form.Item name="anyoSalidaDist" label="Año de salida (distribución)">
           <InputNumber min={1970} max={2100} style={{ width: "100%" }} placeholder="Ej: 2024" />
+        </Form.Item>
+
+        <Form.Item name="precio" label="Precio (€)">
+          <InputNumber min={0} step={0.01} style={{ width: "100%" }} placeholder="Ej: 29.99" />
+        </Form.Item>
+
+        <Form.Item name="fechaCompra" label="Fecha de compra">
+          <DatePicker format="DD-MM-YYYY" style={{ width: "100%" }} placeholder="Selecciona fecha" />
         </Form.Item>
 
         <Form.Item name="precintado" label="Precintado" valuePropName="checked">

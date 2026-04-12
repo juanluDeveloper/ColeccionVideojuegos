@@ -15,9 +15,7 @@ import java.util.Set;
 public record VideojuegoDetalleDTO(
         Integer id,
         String nombre,
-        Float precio,
         Date fechaLanzamiento,
-        Date fechaCompra,
         Plataforma plataforma,
         Set<Genero> generos,
         List<Progreso> progreso,

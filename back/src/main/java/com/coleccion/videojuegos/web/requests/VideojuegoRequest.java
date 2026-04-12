@@ -12,9 +12,7 @@ public class VideojuegoRequest {
 
 	private Integer id;
 	private String nombre;
-	private Float precio;
 	private Date fechaLanzamiento;
-	private Date fechaCompra;
 	private Plataforma plataforma;
 	private Set<Genero> generos;
 }

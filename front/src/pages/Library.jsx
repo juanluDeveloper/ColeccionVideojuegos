@@ -229,6 +229,11 @@ export default function Library() {
         onClose={() => setFormOpen(false)}
         onSuccess={loadGames}
         game={editingGame}
+        existingGames={games}
+        onGoToGame={(gameId) => {
+          setFormOpen(false);
+          setOpenGameId(gameId);
+        }}
       />
     </div>
   );

@@ -32,8 +32,10 @@ export function mapPlataformaToFamily(plataforma) {
   if (p === "WII") return "wii";
   if (p.includes("SWITCH")) return "switch";
 
+  if (p === "NINTENDO_64") return "n64";
+
   // Nintendo home consoles → switch family
-  if (p === "NES" || p === "SUPER_NINTENDO" || p === "NINTENDO_64")
+  if (p === "NES" || p === "SUPER_NINTENDO")
     return "switch";
 
   // Sega → switch family (default look)
@@ -64,6 +66,7 @@ export function platformLabel(family) {
     case "wiiu": return "Wii U";
     case "gamecube": return "GameCube";
     case "wii": return "Wii";
+    case "n64": return "Nintendo 64";
     case "switch":
     default: return "Nintendo";
   }
@@ -82,6 +85,7 @@ export function platformAccent(family) {
     case "gamecube": return "#4b2d8e";
     case "wiiu": return "#009ac7";
     case "wii": return "#8b8b8b";
+    case "n64": return "#c41230";
     case "switch":
     default: return "#e60012";
   }

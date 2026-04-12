@@ -105,9 +105,7 @@ public class VideojuegosUsuarioService {
         return new VideojuegoDetalleDTO(
                 v.getId(),
                 v.getNombre(),
-                v.getPrecio(),
                 v.getFechaLanzamiento(),
-                v.getFechaCompra(),
                 v.getPlataforma(),
                 v.getGeneros(),
                 v.getProgreso(),
@@ -126,9 +124,7 @@ public class VideojuegosUsuarioService {
 
         Videojuego videojuego = Videojuego.builder()
                 .nombre(vRequest.getNombre())
-                .precio(vRequest.getPrecio())
                 .fechaLanzamiento(vRequest.getFechaLanzamiento())
-                .fechaCompra(vRequest.getFechaCompra())
                 .plataforma(vRequest.getPlataforma())
                 .generos(vRequest.getGeneros())
                 .usuario(usuario)
@@ -143,7 +139,7 @@ public class VideojuegosUsuarioService {
 
         if (vRequest.getSoporte() != null) {
             vRequest.getSoporte().forEach(s -> {
-                Soporte soporte = new Soporte(null, s.getTipo(), s.getEstado(), s.getEdicion(), s.getDistribucion(), s.getPrecintado(), s.getRegion(), s.getAnyoSalidaDist(), s.getTienda(), videojuego);
+                Soporte soporte = new Soporte(null, s.getTipo(), s.getEstado(), s.getEdicion(), s.getDistribucion(), s.getPrecintado(), s.getRegion(), s.getAnyoSalidaDist(), s.getTienda(), s.getPrecio(), s.getFechaCompra(), videojuego);
                 videojuego.addSoporte(soporte);
             });
         }
@@ -161,9 +157,7 @@ public class VideojuegosUsuarioService {
         }
 
         videojuego.setNombre(vRequest.getNombre());
-        videojuego.setPrecio(vRequest.getPrecio());
         videojuego.setFechaLanzamiento(vRequest.getFechaLanzamiento());
-        videojuego.setFechaCompra(vRequest.getFechaCompra());
         videojuego.setPlataforma(vRequest.getPlataforma());
         videojuego.getGeneros().clear();
         videojuego.getGeneros().addAll(vRequest.getGeneros());
@@ -179,7 +173,7 @@ public class VideojuegosUsuarioService {
         videojuego.getSoporte().clear();
         if (vRequest.getSoporte() != null) {
             vRequest.getSoporte().forEach(s -> {
-                Soporte soporte = new Soporte(null, s.getTipo(), s.getEstado(), s.getEdicion(), s.getDistribucion(), s.getPrecintado(), s.getRegion(), s.getAnyoSalidaDist(), s.getTienda(), videojuego);
+                Soporte soporte = new Soporte(null, s.getTipo(), s.getEstado(), s.getEdicion(), s.getDistribucion(), s.getPrecintado(), s.getRegion(), s.getAnyoSalidaDist(), s.getTienda(), s.getPrecio(), s.getFechaCompra(), videojuego);
                 videojuego.addSoporte(soporte);
             });
         }

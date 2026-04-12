@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Modal, Form, Select, DatePicker, InputNumber, AutoComplete,
-  Tag, Typography, message,
+  Modal, Form, Select, DatePicker, AutoComplete,
+  Tag, Typography, message, Button,
 } from "antd";
 import { LinkOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -175,9 +175,13 @@ function igdbThumbUrl(imageId) {
  * y muestra sugerencias con el nombre oficial y miniatura de portada.
  * Seleccionar una sugerencia rellena el nombre correcto y vincula con IGDB.
  */
-export default function GameFormModal({ open, onClose, onSuccess, game }) {
+export default function GameFormModal({ open, onClose, onSuccess, game, existingGames = [], onGoToGame }) {
   const [form] = Form.useForm();
   const isEdit = !!game;
+
+  // Duplicate detection
+  const [duplicateGame, setDuplicateGame] = useState(null);
+  const [duplicatePayload, setDuplicatePayload] = useState(null);
 
   // IGDB autocomplete
   const [igdbSelected, setIgdbSelected] = useState(null);
@@ -190,14 +194,14 @@ export default function GameFormModal({ open, onClose, onSuccess, game }) {
   useEffect(() => {
     if (!open) return;
     igdbCacheRef.current = {};
+    setDuplicateGame(null);
+    setDuplicatePayload(null);
     if (game) {
       form.setFieldsValue({
         nombre: game.nombre,
         plataforma: game.plataforma,
         generos: game.generos || [],
-        precio: game.precio,
         fechaLanzamiento: game.fechaLanzamiento ? dayjs(game.fechaLanzamiento) : null,
-        fechaCompra: game.fechaCompra ? dayjs(game.fechaCompra) : null,
       });
       if (game.igdbGameId) {
         setIgdbSelected({ id: game.igdbGameId, name: game.igdbName || game.nombre });
@@ -313,8 +317,19 @@ export default function GameFormModal({ open, onClose, onSuccess, game }) {
     });
   }
 
-  // --- Save ---
-  const handleOk = async () => {
+  // --- Duplicate check ---
+  const findDuplicate = (nombre, plataforma) => {
+    if (!nombre || !plataforma) return null;
+    const normalName = nombre.trim().toLowerCase();
+    return existingGames.find(
+      (g) =>
+        g.nombre?.trim().toLowerCase() === normalName &&
+        g.plataforma === plataforma
+    ) || null;
+  };
+
+  // --- Save (with optional force to skip duplicate check) ---
+  const saveGame = async (forceCreate = false) => {
     try {
       const values = await form.validateFields();
 
@@ -322,14 +337,20 @@ export default function GameFormModal({ open, onClose, onSuccess, game }) {
         nombre: values.nombre.trim(),
         plataforma: values.plataforma,
         generos: values.generos,
-        precio: values.precio ?? null,
         fechaLanzamiento: values.fechaLanzamiento
           ? values.fechaLanzamiento.format("YYYY-MM-DD")
           : null,
-        fechaCompra: values.fechaCompra
-          ? values.fechaCompra.format("YYYY-MM-DD")
-          : null,
       };
+
+      // Duplicate check (only when creating, not editing)
+      if (!isEdit && !forceCreate) {
+        const dup = findDuplicate(payload.nombre, payload.plataforma);
+        if (dup) {
+          setDuplicateGame(dup);
+          setDuplicatePayload(payload);
+          return; // Stop — show duplicate modal
+        }
+      }
 
       let savedGame;
       if (isEdit) {
@@ -363,7 +384,9 @@ export default function GameFormModal({ open, onClose, onSuccess, game }) {
     }
   };
 
-  return (
+  const handleOk = () => saveGame(false);
+
+  return (<>
     <Modal
       title={isEdit ? "Editar videojuego" : "Nuevo videojuego"}
       open={open}
@@ -456,18 +479,6 @@ export default function GameFormModal({ open, onClose, onSuccess, game }) {
           </Form.Item>
         </div>
 
-        {/* --- Precio --- */}
-        <Form.Item name="precio" label="Precio de compra">
-          <InputNumber
-            min={0.01}
-            step={0.01}
-            precision={2}
-            addonAfter="€"
-            placeholder="Opcional"
-            style={{ width: "100%" }}
-          />
-        </Form.Item>
-
         {/* --- Fechas --- */}
         <div className="gfm-row">
           <Form.Item
@@ -482,17 +493,6 @@ export default function GameFormModal({ open, onClose, onSuccess, game }) {
             />
           </Form.Item>
 
-          <Form.Item
-            name="fechaCompra"
-            label="Fecha de compra"
-            className="gfm-half"
-          >
-            <DatePicker
-              placeholder="Opcional"
-              style={{ width: "100%" }}
-              format="DD/MM/YYYY"
-            />
-          </Form.Item>
         </div>
       </Form>
 
@@ -501,5 +501,55 @@ export default function GameFormModal({ open, onClose, onSuccess, game }) {
         <a href="https://www.igdb.com/" target="_blank" rel="noreferrer">IGDB.com</a>
       </Text>
     </Modal>
+
+    {/* --- Modal aviso duplicado --- */}
+    <Modal
+      title="Juego duplicado detectado"
+      open={!!duplicateGame}
+      onCancel={() => { setDuplicateGame(null); setDuplicatePayload(null); }}
+      footer={[
+        <Button
+          key="add-copy"
+          type="primary"
+          onClick={() => {
+            const gId = duplicateGame?.id;
+            setDuplicateGame(null);
+            setDuplicatePayload(null);
+            onClose();
+            if (gId && onGoToGame) onGoToGame(gId);
+          }}
+        >
+          Ir al juego y añadir copia
+        </Button>,
+        <Button
+          key="create-anyway"
+          onClick={() => {
+            setDuplicateGame(null);
+            setDuplicatePayload(null);
+            saveGame(true);
+          }}
+        >
+          Crear igualmente
+        </Button>,
+        <Button
+          key="cancel"
+          onClick={() => { setDuplicateGame(null); setDuplicatePayload(null); }}
+        >
+          Cancelar
+        </Button>,
+      ]}
+      centered
+      destroyOnClose
+    >
+      <p>
+        Ya tienes <strong>{duplicateGame?.nombre}</strong> para{" "}
+        <strong>{humanize(duplicateGame?.plataforma ?? "")}</strong> en tu estantería.
+      </p>
+      <p>
+        Si compraste otra copia, puedes ir al juego existente y añadirle un nuevo soporte
+        en vez de crear un duplicado.
+      </p>
+    </Modal>
+  </>
   );
 }

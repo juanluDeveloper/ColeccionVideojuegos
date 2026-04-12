@@ -65,9 +65,7 @@ public class VideojuegosAdminService {
         // 2️⃣ Crear el videojuego
         Videojuego videojuego = Videojuego.builder()
             .nombre(vRequest.getNombre())
-            .precio(vRequest.getPrecio())
             .fechaLanzamiento(vRequest.getFechaLanzamiento())
-            .fechaCompra(vRequest.getFechaCompra())
             .plataforma(vRequest.getPlataforma())
             .generos(vRequest.getGeneros())
             .usuario(usuario) // Asignamos el usuario encontrado
@@ -100,6 +98,8 @@ public class VideojuegosAdminService {
                     .region(s.getRegion())
                     .anyoSalidaDist(s.getAnyoSalidaDist())
                     .tienda(s.getTienda())
+                    .precio(s.getPrecio())
+                    .fechaCompra(s.getFechaCompra())
                     .videojuego(videojuego)
                     .build();
                 videojuego.addSoporte(soporte);
@@ -120,9 +120,7 @@ public class VideojuegosAdminService {
 
         // 1️⃣ Actualizar datos básicos
         videojuego.setNombre(vRequest.getNombre());
-        videojuego.setPrecio(vRequest.getPrecio());
         videojuego.setFechaLanzamiento(vRequest.getFechaLanzamiento());
-        videojuego.setFechaCompra(vRequest.getFechaCompra());
         videojuego.setPlataforma(vRequest.getPlataforma());
         videojuego.getGeneros().clear();
         videojuego.getGeneros().addAll(vRequest.getGeneros());

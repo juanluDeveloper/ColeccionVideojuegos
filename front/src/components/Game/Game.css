@@ -14,7 +14,7 @@
     z-index 0s 0.5s;
 
   border: 3px black solid;
-  border-radius: 5px;
+  border-radius: 14px;
 }
 
 .cube.hover {
@@ -178,17 +178,17 @@
 /* DS más gruesa y un pelín más baja */
 .front.ds{
   width: clamp(54px, 62px, 70px);
-  height: 31.76vh;
+  height: 28vh;
   grid-template-rows: 30% 70%;
 }
 
 /* 3DS: misma altura que DS pero un poco más delgada */
 .front.n3ds{
   width: clamp(40px, 48px, 54px);
-  height: 31.76vh;
+  height: 28vh;
   grid-template-rows: 30% 70%;
 }
-.left.n3ds { height: 31.76vh; }
+.left.n3ds { height: 28vh; }
 .platform.n3ds {
   background-color: white;
   display: flex;
@@ -306,6 +306,51 @@
   height: 40vh;
 }
 
+/* N64: caja de cartón gruesa, lomo gris oscuro con logo y título blanco */
+.front.n64{
+  width: clamp(54px, 62px, 70px);
+  height: 31.76vh;
+  grid-template-rows: 28% 72%;
+}
+
+.platform.n64 {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.icon.n64 {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+.icon.n64 img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: auto;
+  width: 85%;
+  max-width: none;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
+.title.n64 {
+  background-color: #2d6b3a;
+  color: #ffffff;
+}
+
+.left.n64 {
+  height: 31.76vh;
+}
+
 /* GameCube: caja DVD pequeña, lomo oscuro morado con logo y título lavanda */
 .front.gamecube{
   width: clamp(38px, 46px, 52px);
@@ -357,22 +402,23 @@
   transform-origin: left;
   transition: all 1s ease;
   display: flex;
+  border-radius: 14px;
 }
 
 .left.ds {
-  height: 31.76vh;
+  height: 28vh;
 }
 
 .left.ps[data-plat="PSX"] {
   height: 31.76vh;
 }
 
-/* PSP: un pelín más bajo que PS2 */
-.front.ps[data-plat="PSP"] { height: 36vh; }
+/* PSP: un pelín más bajo que PS2, lomo más fino */
+.front.ps[data-plat="PSP"] { height: 36vh; width: clamp(28px, 34px, 40px); }
 .left.ps[data-plat="PSP"] { height: 36vh; }
 
-/* PSVita: aprox. 3/4 de altura respecto a PSP */
-.front.ps[data-plat="PSVita"] { height: 32vh; }
+/* PSVita: aprox. 3/4 de altura respecto a PSP, lomo más fino */
+.front.ps[data-plat="PSVita"] { height: 32vh; width: clamp(24px, 30px, 34px); }
 .left.ps[data-plat="PSVita"] { height: 32vh; }
 
 .front.animated {
@@ -394,14 +440,16 @@
 .front.ps[data-plat="PSVita"].animated,
 .front.ps[data-plat="PSX"].animated,
 .front.ds.animated,
-.front.n3ds.animated { height: 60vh; }
+.front.n3ds.animated,
+.front.n64.animated { height: 60vh; }
 
 .left.animated,
 .left.ps[data-plat="PSP"].animated,
 .left.ps[data-plat="PSVita"].animated,
 .left.ps[data-plat="PSX"].animated,
 .left.ds.animated,
-.left.n3ds.animated { height: 60vh; }
+.left.n3ds.animated,
+.left.n64.animated { height: 60vh; }
 
 
 .game-container {
@@ -420,9 +468,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  writing-mode: vertical-lr;
+  writing-mode: vertical-rl;
   font-weight: bold;
   color: white;
+  padding: 8px 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .platform {
@@ -582,7 +633,9 @@ img{
 
 /* Cuando la página 2 está volteada, compensamos la cara para que el contenido se lea normal */
 .middleCard.flipped > .gameInfo,
-.middleCard.flipped .gameInfo {
+.middleCard.flipped .gameInfo,
+.middleCard.flipped > .rp,
+.middleCard.flipped .rp {
   transform: rotateY(180deg);
 }
 
@@ -610,6 +663,9 @@ img{
 .cover-pc { background: linear-gradient(180deg, #3d3435 0%, #1f1a1a 100%); }
 .cover-ds { background: linear-gradient(180deg, #f2f2f2 0%, #dcdcdc 100%); }
 .cover-switch { background: linear-gradient(180deg, #e60012 0%, #8a000a 100%); }
+
+/* N64 cover: gris oscuro */
+.cover-n64 { background: linear-gradient(180deg, #2c2c2c 0%, #111111 100%); }
 
 /* GameCube cover: morado oscuro */
 .cover-gamecube { background: linear-gradient(180deg, #4b2d8e 0%, #2a1a52 100%); }
@@ -752,6 +808,7 @@ img{
   box-sizing: border-box;
   overflow-y: auto;
   color: rgba(0,0,0,0.85);
+  border-radius: 14px;
 }
 
 .rp-section {
@@ -989,6 +1046,68 @@ img{
 /* ✅ La portada cerrada mantiene buena composición */
 .coverCenter{
   gap: 16px;
+}
+
+/* ===== Tarjetas seleccionables (copias / playthroughs) ===== */
+.rp-card--selectable {
+  cursor: pointer;
+  transition: background .15s, border-color .15s, box-shadow .15s;
+}
+
+.rp-card--selectable:hover {
+  background: rgba(0,0,0,0.07);
+  border-color: rgba(0,0,0,0.14);
+}
+
+.rp-card--play.rp-card--selectable:hover {
+  background: rgba(42,62,234,0.08);
+  border-color: rgba(42,62,234,0.18);
+}
+
+.rp-card--selected {
+  border-color: #1c2bb1 !important;
+  background: rgba(42,62,234,0.08) !important;
+  box-shadow: 0 0 0 2px rgba(28,43,177,0.18);
+}
+
+/* ===== Vista detalle (página derecha) ===== */
+.rp-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  height: 100%;
+}
+
+.rp-detailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rp-detailClose {
+  background: none;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(0,0,0,0.6);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+
+.rp-detailClose:hover {
+  background: rgba(0,0,0,0.06);
+  color: rgba(0,0,0,0.85);
+}
+
+.rp-detailGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 /* (estilos de hoja derecha movidos al bloque .rp más arriba) */

@@ -42,6 +42,8 @@ public class SoporteService {
                 .region(sRequest.getRegion())
                 .anyoSalidaDist(sRequest.getAnyoSalidaDist())
                 .tienda(sRequest.getTienda())
+                .precio(sRequest.getPrecio())
+                .fechaCompra(sRequest.getFechaCompra())
                 .videojuego(videojuego)
                 .build();
 
@@ -67,7 +69,9 @@ public class SoporteService {
 		if (sRequest.getRegion() != null) soporte.setRegion(sRequest.getRegion());
 		if (sRequest.getAnyoSalidaDist() != null) soporte.setAnyoSalidaDist(sRequest.getAnyoSalidaDist());
 		if (sRequest.getTienda() != null) soporte.setTienda(sRequest.getTienda());
-	
+		if (sRequest.getPrecio() != null) soporte.setPrecio(sRequest.getPrecio());
+		if (sRequest.getFechaCompra() != null) soporte.setFechaCompra(sRequest.getFechaCompra());
+
 		return soporteRepository.save(soporte);
 	}
 	

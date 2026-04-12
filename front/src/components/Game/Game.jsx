@@ -7,6 +7,7 @@ import logo3DS from "../../assets/images/logo-3ds.svg";
 import logoWiiU from "../../assets/images/logo-wiiu.svg";
 import logoWii from "../../assets/images/logo-wii.svg";
 import logoGameCube from "../../assets/images/logo-gamecube.svg";
+import logoN64 from "../../assets/images/logo-n64.svg";
 import logo from "../../assets/images/logo192.png";
 import GameInfo from "../GameInfo/GameInfo.jsx";
 import { getSoportes, getProgresos, getGameDetail, createSoporte, updateSoporte, deleteSoporte, createProgreso, updateProgreso, deleteProgreso } from "../../api/gamesApi";
@@ -43,6 +44,9 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
   const [playthroughModalOpen, setPlaythroughModalOpen] = useState(false);
   const [playthroughLoading, setPlaythroughLoading] = useState(false);
   const [editingPlaythrough, setEditingPlaythrough] = useState(null);
+
+  // Selección para panel derecho: { type: 'soporte'|'playthrough', data: {...} } o null (ficha general)
+  const [selectedItem, setSelectedItem] = useState(null);
 
   // Abrir/cerrar controlado SOLO por isOpen (estado global)
   useEffect(() => {
@@ -233,6 +237,17 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
             <div className="title n3ds">{title}</div>
           </div>
         );
+      case "n64":
+        return (
+          <div className={`front n64 ${isAnimating ? "animated" : ""}`}>
+            <div className="platform n64">
+              <div className="icon n64">
+                <img src={logoN64} alt="Nintendo 64" />
+              </div>
+            </div>
+            <div className="title n64">{title}</div>
+          </div>
+        );
       case "gamecube":
         return (
           <div className={`front gamecube ${isAnimating ? "animated" : ""}`}>
@@ -289,6 +304,7 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
     pc: logo,
     ds: logoDS,
     n3ds: logo3DS,
+    n64: logoN64,
     gamecube: logoGameCube,
     wii: logoWii,
     wiiu: logoWiiU,
@@ -369,219 +385,175 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                 </div>
               </div>
 
-              {/* PÁGINA IZQUIERDA (INFO) */}
+              {/* ═══ PÁGINA IZQUIERDA — Listas + Acciones ═══ */}
               <div className={`page middleCard ${isFlipped ? "flipped" : ""}`}>
-                <div className="pageContent" onClick={(e) => e.stopPropagation()}>
+                <div className="rp" onClick={(e) => e.stopPropagation()}>
                   {detailLoading && <Spin />}
                   {detailError && <Alert type="error" message={detailError} />}
-                  {!detailLoading && !detailError && (
-                    <GameInfo
-                      game={merged}
-                      onIgdbLinked={() => {
-                        const resolvedGameId = gameId ?? game?.id;
-                        if (resolvedGameId) reloadDetail(resolvedGameId);
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
+                  {!detailLoading && !detailError && (<>
 
-              {/* PÁGINA DERECHA — Historial + Acciones */}
-              <div className="page backCard">
-                <div className="rp" onClick={(e) => e.stopPropagation()}>
-                  {/* Soportes (mis copias) */}
+                  {/* Mis copias */}
                   <div className="rp-section">
                     <div className="rp-sectionTitle">Mis copias</div>
                     {(merged?.soporte?.length ?? 0) === 0 ? (
                       <div className="rp-empty">Sin copias registradas</div>
                     ) : (
                       <div className="rp-cards">
-                        {merged.soporte.map((s, i) => (
-                          <div key={s.id ?? i} className="rp-card">
-                            <div className="rp-cardRow">
-                              <span className="rp-tag">{s.tipo?.replace(/_/g, " ") ?? "—"}</span>
-                              {s.precintado && <span className="rp-tag rp-tag--accent">Precintado</span>}
-                              <button
-                                className="rp-cardEdit"
-                                title="Editar copia"
-                                onClick={(e) => {
+                        {merged.soporte.map((s, i) => {
+                          const isSel = selectedItem?.type === "soporte" && selectedItem?.data?.id === s.id;
+                          return (
+                            <div
+                              key={s.id ?? i}
+                              className={`rp-card rp-card--selectable ${isSel ? "rp-card--selected" : ""}`}
+                              onClick={() => setSelectedItem(isSel ? null : { type: "soporte", data: s })}
+                            >
+                              <div className="rp-cardRow">
+                                <span className="rp-tag">{s.tipo?.replace(/_/g, " ") ?? "—"}</span>
+                                {s.precintado && <span className="rp-tag rp-tag--accent">Precintado</span>}
+                                <button className="rp-cardEdit" title="Editar copia" onClick={(e) => { e.stopPropagation(); setEditingSoporte(s); setSoporteModalOpen(true); }}>
+                                  <FontAwesomeIcon icon={faPenToSquare} />
+                                </button>
+                                <button className="rp-cardDelete" title="Eliminar copia" onClick={(e) => {
                                   e.stopPropagation();
-                                  setEditingSoporte(s);
-                                  setSoporteModalOpen(true);
-                                }}
-                              >
-                                <FontAwesomeIcon icon={faPenToSquare} />
-                              </button>
-                              <button
-                                className="rp-cardDelete"
-                                title="Eliminar copia"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  const resolvedId = gameId ?? game?.id;
-                                  if (!resolvedId || !s.id) return;
+                                  const rid = gameId ?? game?.id;
+                                  if (!rid || !s.id) return;
                                   if (window.confirm("¿Eliminar esta copia?")) {
-                                    deleteSoporte(resolvedId, s.id)
-                                      .then(() => reloadDetail(resolvedId))
-                                      .catch((err) => console.error("Error eliminando soporte:", err));
+                                    deleteSoporte(rid, s.id).then(() => { setSelectedItem(null); reloadDetail(rid); }).catch(console.error);
                                   }
-                                }}
-                              >
-                                ✕
-                              </button>
+                                }}>✕</button>
+                              </div>
+                              <div className="rp-cardDetails">
+                                {s.edicion && <span>{s.edicion.replace(/_/g, " ")}</span>}
+                                {s.estado && <span>{s.estado.replace(/_/g, " ")}</span>}
+                                {s.region && <span>{s.region}</span>}
+                                {s.precio != null && <span>{s.precio} €</span>}
+                              </div>
                             </div>
-                            <div className="rp-cardDetails">
-                              {s.edicion && <span>{s.edicion.replace(/_/g, " ")}</span>}
-                              {s.estado && <span>{s.estado.replace(/_/g, " ")}</span>}
-                              {s.region && <span>{s.region}</span>}
-                              {s.distribucion && <span>{s.distribucion.replace(/_/g, " ")}</span>}
-                              {s.tienda && <span>{s.tienda.replace(/_/g, " ")}</span>}
-                              {s.anyoSalidaDist && <span>{s.anyoSalidaDist}</span>}
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     )}
                   </div>
 
-                  {/* Playthroughs */}
+                  {/* Mis playthroughs */}
                   <div className="rp-section">
                     <div className="rp-sectionTitle">Mis playthroughs</div>
                     {(merged?.progreso?.length ?? 0) === 0 ? (
                       <div className="rp-empty">Sin playthroughs registrados</div>
                     ) : (
                       <div className="rp-cards">
-                        {merged.progreso.map((p, i) => (
-                          <div key={p.id ?? i} className="rp-card rp-card--play">
-                            <div className="rp-cardRow">
-                              <span className="rp-tag">{p.avance?.replace(/_/g, " ") ?? "—"}</span>
-                              {p.completadoCien && <span className="rp-tag rp-tag--gold">100%</span>}
-                              <button
-                                className="rp-cardEdit"
-                                title="Editar playthrough"
-                                onClick={(e) => {
+                        {merged.progreso.map((p, i) => {
+                          const isSel = selectedItem?.type === "playthrough" && selectedItem?.data?.id === p.id;
+                          return (
+                            <div
+                              key={p.id ?? i}
+                              className={`rp-card rp-card--play rp-card--selectable ${isSel ? "rp-card--selected" : ""}`}
+                              onClick={() => setSelectedItem(isSel ? null : { type: "playthrough", data: p })}
+                            >
+                              <div className="rp-cardRow">
+                                <span className="rp-tag">{p.avance?.replace(/_/g, " ") ?? "—"}</span>
+                                {p.completadoCien && <span className="rp-tag rp-tag--gold">100%</span>}
+                                <button className="rp-cardEdit" title="Editar playthrough" onClick={(e) => { e.stopPropagation(); setEditingPlaythrough(p); setPlaythroughModalOpen(true); }}>
+                                  <FontAwesomeIcon icon={faPenToSquare} />
+                                </button>
+                                <button className="rp-cardDelete" title="Eliminar playthrough" onClick={(e) => {
                                   e.stopPropagation();
-                                  setEditingPlaythrough(p);
-                                  setPlaythroughModalOpen(true);
-                                }}
-                              >
-                                <FontAwesomeIcon icon={faPenToSquare} />
-                              </button>
-                              <button
-                                className="rp-cardDelete"
-                                title="Eliminar playthrough"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  const resolvedId = gameId ?? game?.id;
-                                  if (!resolvedId || !p.id) return;
+                                  const rid = gameId ?? game?.id;
+                                  if (!rid || !p.id) return;
                                   if (window.confirm("¿Eliminar este playthrough?")) {
-                                    deleteProgreso(resolvedId, p.id)
-                                      .then(() => reloadDetail(resolvedId))
-                                      .catch((err) => console.error("Error eliminando playthrough:", err));
+                                    deleteProgreso(rid, p.id).then(() => { setSelectedItem(null); reloadDetail(rid); }).catch(console.error);
                                   }
-                                }}
-                              >
-                                ✕
-                              </button>
+                                }}>✕</button>
+                              </div>
+                              <div className="rp-cardDetails">
+                                {p.anyoJugado != null && <span>{p.anyoJugado}</span>}
+                                {p.horasJugadas != null && <span>{p.horasJugadas}h</span>}
+                                {p.nota != null && <span>Nota: {p.nota}</span>}
+                              </div>
                             </div>
-                            <div className="rp-cardDetails">
-                              {p.anyoJugado != null && <span>Año: {p.anyoJugado}</span>}
-                              {p.horasJugadas != null && <span>{p.horasJugadas}h</span>}
-                              {p.nota != null && <span>Nota: {p.nota}</span>}
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     )}
                   </div>
 
                   {/* Acciones */}
                   <div className="rp-actions">
-                    <button
-                      className="rp-btn rp-btn--primary"
-                      style={onEdit ? { cursor: "pointer", opacity: 1 } : undefined}
-                      disabled={!onEdit}
-                      onClick={(e) => { e.stopPropagation(); onEdit?.(); }}
-                    >
-                      Editar juego
-                    </button>
-                    <button
-                      className="rp-btn rp-btn--primary"
-                      style={{ cursor: "pointer", opacity: 1 }}
-                      onClick={(e) => { e.stopPropagation(); setEditingPlaythrough(null); setPlaythroughModalOpen(true); }}
-                    >
-                      Añadir playthrough
-                    </button>
-                    <button
-                      className="rp-btn rp-btn--primary"
-                      style={{ cursor: "pointer", opacity: 1 }}
-                      onClick={(e) => { e.stopPropagation(); setEditingSoporte(null); setSoporteModalOpen(true); }}
-                    >
-                      Añadir soporte
-                    </button>
-                    <button
-                      className="rp-btn rp-btn--danger"
-                      style={onDelete ? { cursor: "pointer", opacity: 1 } : undefined}
-                      disabled={!onDelete}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (window.confirm(`¿Eliminar "${merged?.nombre ?? title}"? Esta acción no se puede deshacer.`)) {
-                          onDelete?.();
-                        }
-                      }}
-                    >
-                      Eliminar juego
-                    </button>
+                    <button className="rp-btn rp-btn--primary" style={onEdit ? { cursor: "pointer", opacity: 1 } : undefined} disabled={!onEdit} onClick={(e) => { e.stopPropagation(); onEdit?.(); }}>Editar juego</button>
+                    <button className="rp-btn rp-btn--primary" style={{ cursor: "pointer", opacity: 1 }} onClick={(e) => { e.stopPropagation(); setEditingPlaythrough(null); setPlaythroughModalOpen(true); }}>Añadir playthrough</button>
+                    <button className="rp-btn rp-btn--primary" style={{ cursor: "pointer", opacity: 1 }} onClick={(e) => { e.stopPropagation(); setEditingSoporte(null); setSoporteModalOpen(true); }}>Añadir soporte</button>
+                    <button className="rp-btn rp-btn--danger" style={onDelete ? { cursor: "pointer", opacity: 1 } : undefined} disabled={!onDelete} onClick={(e) => { e.stopPropagation(); if (window.confirm(`¿Eliminar "${merged?.nombre ?? title}"? Esta acción no se puede deshacer.`)) onDelete?.(); }}>Eliminar juego</button>
                   </div>
+
+                  </>)}
+
+                  {/* Modales */}
                   <SoporteModal
-                    open={soporteModalOpen}
-                    loading={soporteLoading}
-                    initialValues={editingSoporte}
+                    open={soporteModalOpen} loading={soporteLoading} initialValues={editingSoporte}
                     onCancel={() => { setSoporteModalOpen(false); setEditingSoporte(null); }}
                     onSubmit={async (values) => {
-                      const resolvedId = gameId ?? game?.id;
-                      if (!resolvedId) return;
+                      const rid = gameId ?? game?.id; if (!rid) return;
                       setSoporteLoading(true);
-                      try {
-                        if (editingSoporte?.id) {
-                          await updateSoporte(resolvedId, editingSoporte.id, values);
-                        } else {
-                          await createSoporte(resolvedId, values);
-                        }
-                        setSoporteModalOpen(false);
-                        setEditingSoporte(null);
-                        reloadDetail(resolvedId);
-                      } catch (e) {
-                        console.error("Error guardando soporte:", e);
-                      } finally {
-                        setSoporteLoading(false);
-                      }
+                      try { if (editingSoporte?.id) await updateSoporte(rid, editingSoporte.id, values); else await createSoporte(rid, values); setSoporteModalOpen(false); setEditingSoporte(null); reloadDetail(rid); } catch(e) { console.error("Error guardando soporte:", e); } finally { setSoporteLoading(false); }
                     }}
                   />
                   <PlaythroughModal
-                    open={playthroughModalOpen}
-                    loading={playthroughLoading}
-                    initialValues={editingPlaythrough}
+                    open={playthroughModalOpen} loading={playthroughLoading} initialValues={editingPlaythrough}
                     onCancel={() => { setPlaythroughModalOpen(false); setEditingPlaythrough(null); }}
                     onSubmit={async (values) => {
-                      const resolvedId = gameId ?? game?.id;
-                      if (!resolvedId) return;
+                      const rid = gameId ?? game?.id; if (!rid) return;
                       setPlaythroughLoading(true);
-                      try {
-                        if (editingPlaythrough?.id) {
-                          await updateProgreso(resolvedId, editingPlaythrough.id, values);
-                        } else {
-                          await createProgreso(resolvedId, values);
-                        }
-                        setPlaythroughModalOpen(false);
-                        setEditingPlaythrough(null);
-                        reloadDetail(resolvedId);
-                      } catch (e) {
-                        console.error("Error guardando playthrough:", e);
-                      } finally {
-                        setPlaythroughLoading(false);
-                      }
+                      try { if (editingPlaythrough?.id) await updateProgreso(rid, editingPlaythrough.id, values); else await createProgreso(rid, values); setPlaythroughModalOpen(false); setEditingPlaythrough(null); reloadDetail(rid); } catch(e) { console.error("Error guardando playthrough:", e); } finally { setPlaythroughLoading(false); }
                     }}
                   />
+                </div>
+              </div>
+
+              {/* ═══ PÁGINA DERECHA — Detalle del item seleccionado o ficha general ═══ */}
+              <div className="page backCard">
+                <div className="rp" onClick={(e) => e.stopPropagation()}>
+                  {!selectedItem ? (
+                    /* Ficha general del juego */
+                    <GameInfo
+                      game={merged}
+                      onIgdbLinked={() => { const rid = gameId ?? game?.id; if (rid) reloadDetail(rid); }}
+                    />
+                  ) : selectedItem.type === "soporte" ? (
+                    /* Detalle de una copia */
+                    <div className="rp-detail">
+                      <div className="rp-detailHeader">
+                        <span className="rp-sectionTitle">Detalle de copia</span>
+                        <button className="rp-detailClose" onClick={() => setSelectedItem(null)}>← Volver</button>
+                      </div>
+                      <div className="rp-detailGrid">
+                        <div className="gi-field"><span className="gi-fieldLabel">Tipo</span><span className="gi-fieldValue">{selectedItem.data.tipo?.replace(/_/g, " ") ?? "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Estado</span><span className="gi-fieldValue">{selectedItem.data.estado?.replace(/_/g, " ") ?? "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Edición</span><span className="gi-fieldValue">{selectedItem.data.edicion?.replace(/_/g, " ") ?? "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Distribución</span><span className="gi-fieldValue">{selectedItem.data.distribucion?.replace(/_/g, " ") ?? "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Región</span><span className="gi-fieldValue">{selectedItem.data.region ?? "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Tienda</span><span className="gi-fieldValue">{selectedItem.data.tienda?.replace(/_/g, " ") ?? "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Año distribución</span><span className="gi-fieldValue">{selectedItem.data.anyoSalidaDist ?? "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Precio</span><span className="gi-fieldValue">{selectedItem.data.precio != null ? `${selectedItem.data.precio} €` : "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Fecha compra</span><span className="gi-fieldValue">{selectedItem.data.fechaCompra ? fmtDate(selectedItem.data.fechaCompra) : "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Precintado</span><span className="gi-fieldValue">{selectedItem.data.precintado ? "Sí" : "No"}</span></div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Detalle de un playthrough */
+                    <div className="rp-detail">
+                      <div className="rp-detailHeader">
+                        <span className="rp-sectionTitle">Detalle de playthrough</span>
+                        <button className="rp-detailClose" onClick={() => setSelectedItem(null)}>← Volver</button>
+                      </div>
+                      <div className="rp-detailGrid">
+                        <div className="gi-field"><span className="gi-fieldLabel">Estado</span><span className="gi-fieldValue">{selectedItem.data.avance?.replace(/_/g, " ") ?? "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Año jugado</span><span className="gi-fieldValue">{selectedItem.data.anyoJugado ?? "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Horas jugadas</span><span className="gi-fieldValue">{selectedItem.data.horasJugadas != null ? `${selectedItem.data.horasJugadas}h` : "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">Nota</span><span className="gi-fieldValue">{selectedItem.data.nota != null ? `${selectedItem.data.nota} / 10` : "—"}</span></div>
+                        <div className="gi-field"><span className="gi-fieldLabel">100% completado</span><span className="gi-fieldValue">{selectedItem.data.completadoCien ? "Sí" : "No"}</span></div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
