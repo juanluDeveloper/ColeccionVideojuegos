@@ -333,8 +333,9 @@ export default function GameFormModal({ open, onClose, onSuccess, game, existing
     try {
       const values = await form.validateFields();
 
+      const officialName = igdbSelected?.name?.trim();
       const payload = {
-        nombre: values.nombre.trim(),
+        nombre: officialName || values.nombre.trim(),
         plataforma: values.plataforma,
         generos: values.generos,
         fechaLanzamiento: values.fechaLanzamiento

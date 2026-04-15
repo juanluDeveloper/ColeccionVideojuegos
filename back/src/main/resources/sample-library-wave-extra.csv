@@ -1,0 +1,101 @@
+# nombre;fechaLanzamiento;plataforma;generos;tipo;estado;edicion;distribucion;precintado;region;anyoSalidaDist;tienda;precio;fechaCompra;anyoJugado;avance;horasJugadas;completado100;nota
+Mario & Luigi: Bowser's Inside Story;2009-02-11;Nintendo_DS;JRPG|Aventuras;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2009;Game;18.95;2022-01-15;2023;Completado;28;false;8.8
+Dark Cloud 2;2002-11-28;PS2;Action_RPG|Aventuras;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2003;Wallapop;24.00;2024-01-13;2024;Backlog;0;false;
+Jeanne d'Arc;2006-11-22;PSP;Tactical_RPG|JRPG;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2013;;14.99;2022-08-05;2023;Jugado;14;false;8.5
+Kid Icarus: Uprising;2012-03-22;Nintendo_3DS;Accion|TPS;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2012;Amazon;31.50;2022-03-26;2023;Jugado;11;false;8.4
+Metroid Prime Remastered;2023-03-03;Nintendo_Switch;Accion_Aventura|FPS;Fisico;Perfecto;Normal;Retail;true;PAL_ESP;2023;Fnac;39.99;2024-02-17;2024;Backlog;0;false;
+Paper Mario: The Thousand-Year Door;2004-07-22;GameCube;JRPG|Aventuras;Fisico;Bueno;Normal;Retail;false;PAL_UK;2005;Vinted;44.00;2023-09-16;2024;Backlog;0;false;
+Another Code: Two Memories;2005-02-24;Nintendo_DS;Aventuras|Puzzle;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2005;Wallapop;16.00;2022-10-01;2023;Completado;7;false;8.0
+Resistance: Retribution;2009-03-17;PSP;TPS|Accion;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2009;Game;9.95;2021-06-12;2022;Jugado;9;false;7.8
+Donkey Kong Country Returns 3D;2013-05-24;Nintendo_3DS;Plataformas_2D|Accion;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2013;Mediamarkt;18.50;2021-09-18;2022;Completado;13;false;8.3
+Jak and Daxter: The Precursor Legacy;2001-12-03;PS2;Plataformas_3D|Accion_Aventura;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2002;Game;10.95;2020-01-11;2020;Completado;12;false;8.2
+Professor Layton and the Curious Village;2007-02-15;Nintendo_DS;Puzzle|Aventuras;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2008;Wallapop;12.00;2021-04-24;2022;Completado;14;false;8.4
+Lumines;2004-12-12;PSP;Puzzle|Ritmo_Musical;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2012;;7.99;2021-02-20;2021;SinFin;21;false;8.1
+Bravely Second: End Layer;2015-04-23;Nintendo_3DS;JRPG;Fisico;Perfecto;Deluxe;Retail;false;PAL_ESP;2016;Fnac;24.99;2023-01-28;2024;Backlog;0;false;
+Live A Live;2022-07-22;Nintendo_Switch;JRPG;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2022;Amazon;34.99;2023-08-12;2024;Backlog;0;false;
+F-Zero GX;2003-07-25;GameCube;Carreras|Accion;Fisico;Meh;Normal;Retail;false;PAL_UK;2004;Vinted;49.00;2024-03-02;2024;Jugado;8;false;8.6
+Hotel Dusk: Room 215;2007-01-22;Nintendo_DS;Aventuras|Visual_Novel;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2007;Vinted;11.50;2022-05-14;2023;Completado;8;false;8.2
+Tactics Ogre: Let Us Cling Together;2010-11-11;PSP;Tactical_RPG|JRPG;Fisico;Perfecto;Limitada;PlayAsia;false;NTSC_USA;2011;Amazon;29.99;2023-02-11;2024;Jugando;18;false;8.7
+Metroid: Samus Returns;2017-09-15;Nintendo_3DS;Metroidvania|Accion;Fisico;Perfecto;Limitada;Retail;false;PAL_ESP;2017;Game;32.95;2022-07-09;2023;Completado;16;false;8.6
+Dragon Quest IX: Sentinels of the Starry Skies;2009-07-11;Nintendo_DS;JRPG;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2010;Game;13.95;2021-07-17;2022;Jugado;24;false;8.1
+Onimusha 3: Demon Siege;2004-02-26;PS2;Accion_Aventura|Hack_and_Slash;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2004;Game;9.99;2020-03-14;2021;Jugado;10;false;7.9
+Monster Hunter 4 Ultimate;2014-10-11;Nintendo_3DS;Action_RPG|Accion;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2015;Fnac;16.99;2021-12-04;2022;Jugando;31;false;8.3
+The Last Story;2011-01-27;Wii;Action_RPG|JRPG;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2012;Amazon;21.99;2022-11-26;2023;Backlog;0;false;
+Mario Kart DS;2005-11-14;Nintendo_DS;Carreras|Party;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2005;Wallapop;10.00;2020-05-16;2021;Jugado;41;false;8.0
+LocoRoco 2;2008-12-04;PSP;Plataformas_2D|Ritmo_Musical;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2014;;9.99;2021-11-20;2022;Jugado;7;false;7.7
+Ever Oasis;2017-07-13;Nintendo_3DS;Action_RPG|Gestion;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2017;Mediamarkt;17.99;2023-06-03;2024;Backlog;0;false;
+13 Sentinels: Aegis Rim;2022-04-12;Nintendo_Switch;Visual_Novel|Estrategia;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2022;Amazon;35.99;2023-12-09;2024;Jugando;12;false;8.9
+Castlevania: Dawn of Sorrow;2005-08-25;Nintendo_DS;Metroidvania|Accion;Fisico;Bueno;Normal;Retail;false;PAL_UK;2005;Vinted;29.00;2023-05-13;2023;Completado;11;false;8.7
+Dissidia 012 Final Fantasy;2011-03-03;PSP;Lucha|JRPG;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2011;Game;12.99;2022-12-10;2023;Jugado;19;false;8.1
+The Legend of Zelda: Ocarina of Time 3D;2011-06-16;Nintendo_3DS;Accion_Aventura|Puzzle;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2011;Amazon;25.99;2020-10-10;2021;Completado;21;false;9.2
+Tekken 5;2004-12-09;PS2;Lucha;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2005;Wallapop;8.00;2020-08-29;2021;Jugado;12;false;7.9
+Elite Beat Agents;2006-11-06;Nintendo_DS;Ritmo_Musical|Party;Fisico;Muy_bueno;Normal;Retail;false;NTSC_USA;2006;Amazon;21.00;2024-01-06;2024;Jugado;9;false;8.3
+Valkyria Chronicles II;2010-01-21;PSP;Tactical_RPG|Estrategia;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2010;Game;9.95;2021-03-27;2022;Jugando;17;false;7.8
+Fantasy Life;2012-12-27;Nintendo_3DS;Action_RPG|Simulacion;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2014;Fnac;24.99;2023-02-18;2024;Jugando;26;false;8.4
+Captain Toad: Treasure Tracker;2018-07-13;Nintendo_Switch;Puzzle|Aventuras;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2018;Mediamarkt;24.99;2022-09-24;2023;Completado;10;false;8.0
+Chibi-Robo! Plug Into Adventure!;2005-06-23;GameCube;Aventuras|Puzzle;Fisico;Meh;Normal;Retail;false;PAL_UK;2006;Vinted;58.00;2024-02-24;2024;Backlog;0;false;
+Ghost Trick: Phantom Detective;2010-06-19;Nintendo_DS;Aventuras|Puzzle;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2011;Game;21.95;2023-10-21;2024;Completado;12;false;8.9
+Half-Minute Hero;2009-05-28;PSP;Action_RPG|Party;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2013;;7.99;2021-10-09;2022;Jugado;6;false;7.6
+Radiant Historia: Perfect Chronology;2017-06-29;Nintendo_3DS;JRPG;Fisico;Perfecto;Normal;PlayAsia;false;NTSC_USA;2018;Amazon;36.00;2023-04-15;2024;Backlog;0;false;
+Xenoblade Chronicles;2010-06-10;Wii;JRPG|Action_RPG;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2011;Game;28.95;2022-06-11;2023;Completado;68;false;9.0
+999: Nine Hours, Nine Persons, Nine Doors;2009-12-10;Nintendo_DS;Visual_Novel|Puzzle;Fisico;Muy_bueno;Normal;Retail;false;NTSC_USA;2010;Amazon;29.95;2023-08-26;2024;Completado;14;false;9.1
+Killzone: Liberation;2006-10-31;PSP;TPS|Accion;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2014;;9.99;2023-03-19;2023;Jugado;8;false;7.5
+Kirby: Planet Robobot;2016-04-28;Nintendo_3DS;Plataformas_2D|Accion;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2016;Fnac;22.99;2023-11-04;2024;Completado;12;false;8.7
+The World Ends With You: Final Remix;2018-10-12;Nintendo_Switch;Action_RPG|JRPG;Fisico;Muy_bueno;Normal;PlayAsia;false;NTSC_USA;2018;Amazon;42.00;2023-09-30;2024;Jugando;9;false;8.2
+Advance Wars: Dual Strike;2005-06-23;Nintendo_DS;Estrategia|Tactical_RPG;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2005;Wallapop;14.00;2022-02-05;2023;Jugado;17;false;8.0
+Secret Agent Clank;2008-06-17;PSP;Accion_Aventura|Plataformas_3D;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2008;Game;8.99;2021-01-30;2022;Jugado;7;false;7.1
+Dragon Quest VII: Fragments of the Forgotten Past;2013-02-07;Nintendo_3DS;JRPG;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2016;Amazon;27.99;2022-08-27;2024;Backlog;0;false;
+GrimGrimoire;2007-04-12;PS2;Estrategia|Visual_Novel;Fisico;Meh;Normal;Retail;false;PAL_UK;2008;Vinted;26.00;2024-01-27;2024;Backlog;0;false;
+Animal Crossing: Wild World;2005-11-23;Nintendo_DS;Simulacion|Gestion;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2006;Wallapop;9.00;2020-07-04;2021;SinFin;56;false;8.1
+Ape Escape: On the Loose;2005-03-17;PSP;Plataformas_3D|Accion_Aventura;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2005;Game;12.50;2022-10-22;2023;Jugado;8;false;7.8
+Fire Emblem Fates: Conquest;2015-06-25;Nintendo_3DS;Tactical_RPG|JRPG;Fisico;Perfecto;Limitada;Retail;false;PAL_ESP;2016;Game;29.99;2023-03-25;2024;Backlog;0;false;
+Super Paper Mario;2007-04-09;Wii;Plataformas_2D|Aventuras;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2007;Game;13.99;2021-05-29;2022;Completado;16;false;8.2
+Castlevania: Portrait of Ruin;2006-11-16;Nintendo_DS;Metroidvania|Accion;Fisico;Bueno;Normal;Retail;false;PAL_UK;2007;Vinted;24.00;2023-07-08;2024;Jugando;6;false;8.3
+Persona 2: Innocent Sin;2011-04-14;PSP;JRPG|Visual_Novel;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2014;;19.99;2022-11-12;2024;Backlog;0;false;
+Animal Crossing: New Leaf;2012-11-08;Nintendo_3DS;Simulacion|Gestion;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2013;Amazon;19.99;2021-03-20;2022;SinFin;122;false;8.7
+Jak 3;2004-11-09;PS2;Plataformas_3D|Accion_Aventura;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2005;Game;10.95;2020-02-08;2020;Completado;14;false;8.3
+Sonic Rush;2005-11-15;Nintendo_DS;Plataformas_2D|Accion;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2005;Wallapop;10.50;2021-09-04;2022;Jugado;6;false;7.6
+Power Stone Collection;2006-08-18;PSP;Lucha|Party;Fisico;Meh;Normal;Retail;false;PAL_UK;2006;Vinted;22.00;2023-12-02;2024;Jugado;4;false;7.7
+Pokemon Ultra Sun;2017-11-17;Nintendo_3DS;JRPG;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2017;Mediamarkt;27.99;2020-06-13;2021;Completado;42;false;8.0
+Metroid Prime;2002-11-17;GameCube;Accion_Aventura|FPS;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2003;Vinted;27.00;2023-10-14;2024;Jugado;10;false;8.9
+WarioWare: Touched!;2004-12-02;Nintendo_DS;Party|Ritmo_Musical;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2005;Game;12.00;2021-10-16;2022;Jugado;5;false;7.8
+God of War: Chains of Olympus;2008-03-04;PSP;Hack_and_Slash|Accion;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2008;Game;11.95;2020-12-12;2021;Completado;7;false;8.1
+Etrian Odyssey IV: Legends of the Titan;2012-07-05;Nintendo_3DS;JRPG|RPG;Fisico;Perfecto;Normal;PlayAsia;false;NTSC_USA;2013;Amazon;34.00;2023-01-14;2024;Backlog;0;false;
+Advance Wars 1+2: Re-Boot Camp;2023-04-21;Nintendo_Switch;Estrategia|Tactical_RPG;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2023;Amazon;39.99;2024-02-03;2024;Backlog;0;false;
+Golden Sun: Dark Dawn;2010-10-28;Nintendo_DS;JRPG;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2010;Wallapop;15.00;2022-04-02;2023;Jugando;9;false;7.8
+OutRun 2006: Coast 2 Coast;2006-03-31;PSP;Carreras;Fisico;Muy_bueno;Normal;Retail;false;PAL_UK;2006;Vinted;14.00;2023-07-22;2024;Jugado;6;false;8.2
+Mario Golf: World Tour;2014-05-01;Nintendo_3DS;Deportes;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2014;Fnac;16.99;2023-05-20;2024;Jugado;15;false;7.9
+Dark Cloud;2000-12-14;PS2;Action_RPG|Aventuras;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2001;Wallapop;17.00;2023-11-18;2024;Backlog;0;false;
+Resident Evil Deadly Silence;2006-01-19;Nintendo_DS;Survival_Horror|Accion;Fisico;Bueno;Normal;Retail;false;NTSC_USA;2006;Amazon;24.00;2024-02-10;2024;Jugado;8;false;7.9
+Final Fantasy Tactics: The War of the Lions;2007-05-10;PSP;Tactical_RPG|JRPG;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2016;;12.99;2023-01-22;2023;Completado;26;false;8.8
+Shin Megami Tensei IV: Apocalypse;2016-02-10;Nintendo_3DS;JRPG;Digital;Perfecto;Normal;Nintendo_eShop;false;PAL_ESP;2017;;17.99;2022-09-10;2024;Backlog;0;false;
+Clubhouse Games: 51 Worldwide Classics;2020-06-05;Nintendo_Switch;Party|Puzzle;Digital;Perfecto;Normal;Nintendo_eShop;false;PAL_ESP;2020;;39.99;2021-12-18;2022;SinFin;48;false;7.5
+Mario Party DS;2007-11-08;Nintendo_DS;Party;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2007;Wallapop;11.00;2020-02-22;2021;Jugado;16;false;7.7
+Metal Gear Solid: Peace Walker;2010-04-29;PSP;Accion_Aventura|TPS;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2010;Game;12.99;2021-07-03;2022;Completado;23;false;8.6
+Pokemon X;2013-10-12;Nintendo_3DS;JRPG;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2013;Mediamarkt;22.99;2020-11-28;2021;Completado;34;false;7.9
+Wario Land: Shake It!;2008-07-24;Wii;Plataformas_2D;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2008;Game;11.95;2022-02-19;2023;Completado;8;false;8.1
+Custom Robo Arena;2006-10-19;Nintendo_DS;Accion|TPS;Fisico;Muy_bueno;Normal;Retail;false;NTSC_USA;2007;Amazon;18.00;2023-06-24;2024;Jugado;7;false;7.6
+Ridge Racer;2004-12-12;PSP;Carreras;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2015;;9.99;2022-05-07;2023;Jugado;11;false;7.4
+The Legend of Zelda: Majora's Mask 3D;2015-02-13;Nintendo_3DS;Accion_Aventura|Puzzle;Fisico;Perfecto;Limitada;Retail;false;PAL_ESP;2015;Game;34.99;2022-12-17;2024;Backlog;0;false;
+Prince of Persia: The Sands of Time;2003-11-06;PS2;Accion_Aventura|Puzzle;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2003;Wallapop;8.50;2020-10-31;2021;Completado;9;false;8.0
+WarioWare D.I.Y.;2009-04-29;Nintendo_DS;Party|Gestion;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2010;Vinted;15.00;2023-04-29;2024;Jugado;8;false;7.9
+Kingdom Hearts Birth by Sleep;2010-01-09;PSP;Action_RPG;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2010;Game;13.99;2021-08-14;2022;Completado;26;false;8.4
+Rune Factory 4;2012-07-19;Nintendo_3DS;Action_RPG|Simulacion;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2014;Fnac;21.99;2023-07-01;2024;Jugando;14;false;8.3
+New Pokemon Snap;2021-04-30;Nintendo_Switch;Simulacion|Aventuras;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2021;Mediamarkt;29.99;2022-06-25;2023;Completado;13;false;7.8
+Phoenix Wright: Ace Attorney;2005-09-15;Nintendo_DS;Visual_Novel|Puzzle;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2006;Game;16.00;2022-01-08;2023;Completado;13;false;8.7
+LittleBigPlanet PSP;2009-11-20;PSP;Plataformas_2D|Party;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2014;;8.99;2022-06-18;2023;Jugado;9;false;7.6
+Detective Pikachu;2016-02-03;Nintendo_3DS;Aventuras|Puzzle;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2018;Fnac;18.99;2023-08-19;2024;Completado;10;false;7.4
+Ace Combat 5: The Unsung War;2004-10-21;PS2;Simulacion|Accion;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2005;Wallapop;10.00;2021-01-23;2022;Jugado;15;false;8.2
+Pokemon Black 2;2012-06-23;Nintendo_DS;JRPG;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2012;Mediamarkt;32.00;2021-11-27;2022;Completado;39;false;8.5
+SOCOM: Fireteam Bravo 2;2006-11-07;PSP;TPS|Accion;Fisico;Meh;Normal;Retail;false;PAL_ESP;2007;Game;7.99;2020-09-05;2021;Jugado;6;false;7.0
+Xenoblade Chronicles 3D;2015-04-02;Nintendo_3DS;JRPG|Action_RPG;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2015;Amazon;29.99;2023-03-11;2024;Backlog;0;false;
+The House of the Dead 2 & 3 Return;2008-03-19;Wii;TPS|Accion;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2008;Game;9.99;2021-10-02;2022;Jugado;4;false;7.2
+Mario & Luigi: Partners in Time;2005-11-28;Nintendo_DS;JRPG|Aventuras;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2006;Wallapop;16.50;2022-09-17;2023;Completado;20;false;8.1
+Star Ocean: Second Evolution;2008-04-02;PSP;JRPG|Action_RPG;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2015;;14.99;2023-01-21;2024;Backlog;0;false;
+Fire Emblem Echoes: Shadows of Valentia;2017-04-20;Nintendo_3DS;Tactical_RPG|JRPG;Fisico;Perfecto;Limitada;Retail;false;PAL_ESP;2017;Fnac;39.99;2022-10-15;2024;Backlog;0;false;
+Pikmin 3 Deluxe;2020-10-30;Nintendo_Switch;Estrategia|Puzzle;Fisico;Muy_bueno;Normal;Retail;false;PAL_ESP;2020;Miravia;29.99;2023-07-15;2024;Jugando;11;false;8.4
+Trauma Center: Under the Knife;2005-06-30;Nintendo_DS;Simulacion|Puzzle;Fisico;Bueno;Normal;Retail;false;PAL_ESP;2006;Vinted;11.00;2021-08-21;2022;Jugado;10;false;7.7
+Phantasy Star Portable 2;2009-12-03;PSP;Action_RPG|Accion;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2014;;14.99;2022-04-16;2023;Jugado;12;false;7.8
+Story of Seasons;2014-02-27;Nintendo_3DS;Simulacion|Gestion;Fisico;Perfecto;Normal;Retail;false;PAL_ESP;2015;Amazon;17.99;2023-09-23;2024;Jugando;8;false;7.6
+Klonoa 2: Lunatea's Veil;2001-07-25;PS2;Plataformas_2D|Aventuras;Fisico;Meh;Normal;Retail;false;PAL_UK;2002;Vinted;32.00;2024-03-16;2024;Backlog;0;false;
+Patapon 2;2008-11-27;PSP;Ritmo_Musical|Estrategia;Digital;Perfecto;Normal;PlayStation_Store;false;PAL_ESP;2013;;9.99;2022-07-30;2023;Jugado;15;false;8.0

@@ -351,6 +351,243 @@
   height: 31.76vh;
 }
 
+.front.nes{
+  width: clamp(42px, 48px, 54px);
+  height: 31.5vh;
+  grid-template-rows: 29% 71%;
+}
+
+.platform.nes {
+  background-color: var(--spine-top, #f5f5f5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  border-bottom: 2px solid #e60012;
+}
+
+.icon.nes {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+.icon.nes img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 94%;
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
+.title.nes {
+  background-color: var(--spine-bottom, #1c1c1c);
+  color: var(--text-bottom, #ffffff);
+}
+
+.left.nes {
+  height: 31.5vh;
+}
+
+.front.snes{
+  width: clamp(54px, 62px, 70px);
+  height: 31.76vh;
+  grid-template-rows: 24% 76%;
+}
+
+.platform.snes {
+  background-color: var(--spine-top, #f1f1f3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  border-bottom: 2px solid #6b6b8a;
+}
+
+.icon.snes {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+.icon.snes img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
+.title.snes {
+  background-color: var(--spine-bottom, #d4d4e0);
+  color: var(--text-bottom, #1e1e1e);
+}
+
+.left.snes {
+  height: 31.76vh;
+}
+
+.front.gb{
+  width: clamp(42px, 48px, 54px);
+  height: 28vh;
+  grid-template-rows: 29% 71%;
+}
+
+.platform.gb {
+  background-color: var(--spine-top, #f7f7f4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  border-bottom: 3px solid var(--accent, #30308f);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75);
+}
+
+.icon.gb {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+.icon.gb img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 98%;
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
+.title.gb {
+  background-color: var(--spine-bottom, #8a8d84);
+  color: var(--text-bottom, #ffffff);
+}
+
+.left.gb {
+  height: 28vh;
+}
+
+.front.gbc{
+  width: clamp(42px, 48px, 54px);
+  height: 28vh;
+  grid-template-rows: 31% 69%;
+}
+
+.platform.gbc {
+  background-color: var(--spine-top, #faf9fd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  border-bottom: 3px solid var(--accent, #ff5aa5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75);
+}
+
+.icon.gbc {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+.icon.gbc img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 110%;
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
+.title.gbc {
+  background-color: var(--spine-bottom, #7a62c9);
+  color: var(--text-bottom, #ffffff);
+}
+
+.left.gbc {
+  height: 28vh;
+}
+
+.front.gba{
+  width: clamp(40px, 46px, 50px);
+  height: 28vh;
+  grid-template-rows: 32% 68%;
+}
+
+.platform.gba {
+  background-color: var(--spine-top, #f6f4fb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  border-bottom: 3px solid var(--accent, #8b6ff2);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75);
+}
+
+.icon.gba {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+}
+
+.icon.gba img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 112%;
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
+}
+
+.title.gba {
+  background-color: var(--spine-bottom, #5a4a8e);
+  color: var(--text-bottom, #ffffff);
+}
+
+.left.gba {
+  height: 28vh;
+}
+
+.title.gb,
+.title.gbc,
+.title.gba {
+  font-size: clamp(10px, 0.95vw, 15px);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  padding: 10px 4px;
+}
+
 /* GameCube: caja DVD pequeña, lomo oscuro morado con logo y título lavanda */
 .front.gamecube{
   width: clamp(38px, 46px, 52px);
@@ -441,6 +678,11 @@
 .front.ps[data-plat="PSX"].animated,
 .front.ds.animated,
 .front.n3ds.animated,
+.front.gb.animated,
+.front.gbc.animated,
+.front.gba.animated,
+.front.nes.animated,
+.front.snes.animated,
 .front.n64.animated { height: 60vh; }
 
 .left.animated,
@@ -449,6 +691,11 @@
 .left.ps[data-plat="PSX"].animated,
 .left.ds.animated,
 .left.n3ds.animated,
+.left.gb.animated,
+.left.gbc.animated,
+.left.gba.animated,
+.left.nes.animated,
+.left.snes.animated,
 .left.n64.animated { height: 60vh; }
 
 
@@ -470,10 +717,15 @@
   justify-content: center;
   writing-mode: vertical-rl;
   font-weight: bold;
+  font-size: 16px;
+  line-height: 1;
   color: white;
   padding: 8px 2px;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
+  min-height: 0;
+  overflow-wrap: anywhere;
 }
 
 .platform {
@@ -667,6 +919,17 @@ img{
 /* N64 cover: gris oscuro */
 .cover-n64 { background: linear-gradient(180deg, #2c2c2c 0%, #111111 100%); }
 
+/* NES cover: oscuro con acento rojo clasico */
+.cover-nes { background: linear-gradient(180deg, #3a3a3a 0%, #111111 100%); }
+
+/* SNES cover: gris violeta sobrio */
+.cover-snes { background: linear-gradient(180deg, #6b6b8a 0%, #3a3a52 100%); }
+
+/* Game Boy family covers */
+.cover-gb { background: linear-gradient(180deg, #d9d7d2 0%, #8a8d84 100%); }
+.cover-gbc { background: linear-gradient(180deg, #b9a8f2 0%, #5a3fb3 100%); }
+.cover-gba { background: linear-gradient(180deg, #a896de 0%, #43356f 100%); }
+
 /* GameCube cover: morado oscuro */
 .cover-gamecube { background: linear-gradient(180deg, #4b2d8e 0%, #2a1a52 100%); }
 
@@ -680,12 +943,16 @@ img{
 .coverClosed.cover-ds .coverPill,
 .coverClosed.cover-ds .coverTitle,
 .coverClosed.cover-ds .coverMeta,
+.coverClosed.cover-gb .coverPill,
+.coverClosed.cover-gb .coverTitle,
+.coverClosed.cover-gb .coverMeta,
 .coverClosed.cover-wii .coverPill,
 .coverClosed.cover-wii .coverTitle,
 .coverClosed.cover-wii .coverMeta {
   color: rgba(0,0,0,0.85);
 }
 .coverClosed.cover-ds .coverPill,
+.coverClosed.cover-gb .coverPill,
 .coverClosed.cover-wii .coverPill {
   background: rgba(0,0,0,0.08);
   color: rgba(0,0,0,0.78);

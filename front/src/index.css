@@ -10,6 +10,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f8f9fa; /* o white */
+  transition: background 220ms ease, color 220ms ease;
 }
 
 code {

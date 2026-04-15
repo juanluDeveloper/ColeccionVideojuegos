@@ -79,6 +79,7 @@ application.properties
 /storage
 # production
 /build
+front/build/
 
 # misc
 .DS_Store
@@ -101,6 +102,7 @@ yarn-error.log*
 front/storage/igdb
 ### production ###
 /build
+front/build/
 
 ### misc ###
 .DS_Store

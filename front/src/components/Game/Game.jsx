@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./Game.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logoSwitch from "../../assets/images/logo-switch.png";
@@ -8,6 +8,11 @@ import logoWiiU from "../../assets/images/logo-wiiu.svg";
 import logoWii from "../../assets/images/logo-wii.svg";
 import logoGameCube from "../../assets/images/logo-gamecube.svg";
 import logoN64 from "../../assets/images/logo-n64.svg";
+import logoNES from "../../assets/images/logo-nes.svg";
+import logoSNES from "../../assets/images/logo-snes.svg";
+import logoGB from "../../assets/images/logo-gb.svg";
+import logoGBC from "../../assets/images/logo-gbc.svg";
+import logoGBA from "../../assets/images/logo-gba.svg";
 import logo from "../../assets/images/logo192.png";
 import GameInfo from "../GameInfo/GameInfo.jsx";
 import { getSoportes, getProgresos, getGameDetail, createSoporte, updateSoporte, deleteSoporte, createProgreso, updateProgreso, deleteProgreso } from "../../api/gamesApi";
@@ -19,6 +24,51 @@ import { faPlaystation, faXbox, faSteam } from "@fortawesome/free-brands-svg-ico
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { useAuthedImageBlob } from "../../hooks/useAuthedImageBlob";
+
+function SpineTitle({ className, children }) {
+  const titleRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const el = titleRef.current;
+    if (!el) return;
+
+    const fitTitle = () => {
+      el.style.removeProperty("font-size");
+      let nextSize = parseFloat(window.getComputedStyle(el).fontSize) || 16;
+      let safety = 0;
+
+      while ((el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth) && nextSize > 8 && safety < 24) {
+        nextSize -= 0.5;
+        el.style.fontSize = `${nextSize}px`;
+        safety += 1;
+      }
+    };
+
+    fitTitle();
+    const rafId = window.requestAnimationFrame(fitTitle);
+    const onResize = () => fitTitle();
+    window.addEventListener("resize", onResize);
+
+    let observer;
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(() => fitTitle());
+      observer.observe(el);
+      if (el.parentElement) observer.observe(el.parentElement);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", onResize);
+      observer?.disconnect();
+    };
+  }, [children, className]);
+
+  return (
+    <div ref={titleRef} className={className} title={children}>
+      {children}
+    </div>
+  );
+}
 
 const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen, onOpen, onClose, onEdit, onDelete }) => {
   const spineRef = useRef(null);
@@ -163,7 +213,7 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
 
   // CSS custom properties from spineDesign — override family defaults per platform
   // Solo aplicamos override a ps, xbox y pc. DS y Switch conservan su diseño original.
-  const useSpineOverride = spineDesign && (platform === "ps" || platform === "xbox" || platform === "pc");
+  const useSpineOverride = spineDesign && (platform === "ps" || platform === "xbox" || platform === "pc" || platform === "nes" || platform === "snes" || platform === "gb" || platform === "gbc" || platform === "gba");
   const spineVars = useSpineOverride
     ? {
         "--spine-top": spineDesign.spineTop,
@@ -178,6 +228,13 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
     ? (spineDesign?.label || platform?.toUpperCase() || "")
     : undefined; // ds/switch usan su label original
 
+  // Use the freshest title available so IGDB links update the spine immediately.
+  const merged = mergeGame(game, detail);
+  const displayTitle = merged?.igdbName || merged?.nombre || title;
+  const renderSpineTitle = (className) => (
+    <SpineTitle className={className}>{displayTitle}</SpineTitle>
+  );
+
   const renderPlatformIcon = (platform) => {
     switch (platform) {
       case "ps":
@@ -189,7 +246,7 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
               </div>
               <div> {spineLabel || "PS"}</div>
             </div>
-            <div className="title ps">{title}</div>
+            {renderSpineTitle("title ps")}
           </div>
         );
       case "xbox":
@@ -201,7 +258,7 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
               </div>
               <div className="xbox-label"> {spineLabel || "XBOX"}</div>
             </div>
-            <div className="title xbox">{title}</div>
+            {renderSpineTitle("title xbox")}
           </div>
         );
       case "pc":
@@ -212,7 +269,7 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                 <FontAwesomeIcon icon={faSteam} size="xl" />
               </div>
             </div>
-            <div className="title pc">{title}</div>
+            {renderSpineTitle("title pc")}
           </div>
         );
       case "ds":
@@ -223,7 +280,7 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                 <img src={logoDS} alt="Logo" style={{ width: "auto", height: "100%", rotate: "90deg" }} />
               </div>
             </div>
-            <div className="title ds">{title}</div>
+            {renderSpineTitle("title ds")}
           </div>
         );
       case "n3ds":
@@ -234,7 +291,40 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                 <img src={logo3DS} alt="Nintendo 3DS" />
               </div>
             </div>
-            <div className="title n3ds">{title}</div>
+            {renderSpineTitle("title n3ds")}
+          </div>
+        );
+      case "gb":
+        return (
+          <div className={`front gb ${isAnimating ? "animated" : ""}`} style={spineVars}>
+            <div className="platform gb">
+              <div className="icon gb">
+                <img src={logoGB} alt="Game Boy" />
+              </div>
+            </div>
+            {renderSpineTitle("title gb")}
+          </div>
+        );
+      case "gbc":
+        return (
+          <div className={`front gbc ${isAnimating ? "animated" : ""}`} style={spineVars}>
+            <div className="platform gbc">
+              <div className="icon gbc">
+                <img src={logoGBC} alt="Game Boy Color" />
+              </div>
+            </div>
+            {renderSpineTitle("title gbc")}
+          </div>
+        );
+      case "gba":
+        return (
+          <div className={`front gba ${isAnimating ? "animated" : ""}`} style={spineVars}>
+            <div className="platform gba">
+              <div className="icon gba">
+                <img src={logoGBA} alt="Game Boy Advance" />
+              </div>
+            </div>
+            {renderSpineTitle("title gba")}
           </div>
         );
       case "n64":
@@ -245,7 +335,29 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                 <img src={logoN64} alt="Nintendo 64" />
               </div>
             </div>
-            <div className="title n64">{title}</div>
+            {renderSpineTitle("title n64")}
+          </div>
+        );
+      case "nes":
+        return (
+          <div className={`front nes ${isAnimating ? "animated" : ""}`} style={spineVars}>
+            <div className="platform nes">
+              <div className="icon nes">
+                <img src={logoNES} alt="Nintendo Entertainment System" />
+              </div>
+            </div>
+            {renderSpineTitle("title nes")}
+          </div>
+        );
+      case "snes":
+        return (
+          <div className={`front snes ${isAnimating ? "animated" : ""}`} style={spineVars}>
+            <div className="platform snes">
+              <div className="icon snes">
+                <img src={logoSNES} alt="Super Nintendo" />
+              </div>
+            </div>
+            {renderSpineTitle("title snes")}
           </div>
         );
       case "gamecube":
@@ -256,7 +368,7 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                 <img src={logoGameCube} alt="GameCube" />
               </div>
             </div>
-            <div className="title gamecube">{title}</div>
+            {renderSpineTitle("title gamecube")}
           </div>
         );
       case "wii":
@@ -267,7 +379,7 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                 <img src={logoWii} alt="Wii" style={{ width: "100%", height: "auto" }} />
               </div>
             </div>
-            <div className="title wii">{title}</div>
+            {renderSpineTitle("title wii")}
           </div>
         );
       case "wiiu":
@@ -278,7 +390,7 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                 <img src={logoWiiU} alt="Wii U" style={{ width: "100%", height: "auto" }} />
               </div>
             </div>
-            <div className="title wiiu">{title}</div>
+            {renderSpineTitle("title wiiu")}
           </div>
         );
       default:
@@ -289,14 +401,11 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                 <img src={logoSwitch} alt="Logo" style={{ width: "100%", height: "auto" }} />
               </div>
             </div>
-            <div className="title switch">{title}</div>
+            {renderSpineTitle("title switch")}
           </div>
         );
     }
   };
-
-  // merged game data (base + IGDB DTO + soporte/progreso)
-  const merged = mergeGame(game, detail);
   const artworkBlob = useAuthedImageBlob(merged?.artworkUrl);
   const diskLogoByPlatform = {
     ps: logo,
@@ -304,7 +413,12 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
     pc: logo,
     ds: logoDS,
     n3ds: logo3DS,
+    gb: logoGB,
+    gbc: logoGBC,
+    gba: logoGBA,
     n64: logoN64,
+    nes: logoNES,
+    snes: logoSNES,
     gamecube: logoGameCube,
     wii: logoWii,
     wiiu: logoWiiU,
@@ -324,6 +438,21 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
     }
     if (platform === "ds") {
       return <img src={logoDS} alt="Disk" className="diskImg" />;
+    }
+    if (platform === "gb") {
+      return <img src={logoGB} alt="Game Boy" className="diskImg" />;
+    }
+    if (platform === "gbc") {
+      return <img src={logoGBC} alt="Game Boy Color" className="diskImg" />;
+    }
+    if (platform === "gba") {
+      return <img src={logoGBA} alt="Game Boy Advance" className="diskImg" />;
+    }
+    if (platform === "nes") {
+      return <img src={logoNES} alt="NES" className="diskImg" />;
+    }
+    if (platform === "snes") {
+      return <img src={logoSNES} alt="SNES" className="diskImg" />;
     }
     if (platform === "gamecube") {
       return <img src={logoGameCube} alt="Disk" className="diskImg" />;
@@ -373,12 +502,12 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                   <div className="coverCenter">
                     <div className={`coverSlot ${platform}`}>
                       <CoverArt
-                        title={merged?.nombre ?? title}
+                        title={displayTitle}
                         platform={platform}
                         coverUrl={merged?.coverUrl}
                       />
                     </div>
-                    <h2 className="coverTitle">{merged?.nombre ?? title}</h2>
+                    <h2 className="coverTitle">{displayTitle}</h2>
                   </div>
 
                   <div className="coverShine" />
@@ -482,7 +611,7 @@ const Game = ({ platform, rawPlatform, spineDesign, title, gameId, game, isOpen,
                     <button className="rp-btn rp-btn--primary" style={onEdit ? { cursor: "pointer", opacity: 1 } : undefined} disabled={!onEdit} onClick={(e) => { e.stopPropagation(); onEdit?.(); }}>Editar juego</button>
                     <button className="rp-btn rp-btn--primary" style={{ cursor: "pointer", opacity: 1 }} onClick={(e) => { e.stopPropagation(); setEditingPlaythrough(null); setPlaythroughModalOpen(true); }}>Añadir playthrough</button>
                     <button className="rp-btn rp-btn--primary" style={{ cursor: "pointer", opacity: 1 }} onClick={(e) => { e.stopPropagation(); setEditingSoporte(null); setSoporteModalOpen(true); }}>Añadir soporte</button>
-                    <button className="rp-btn rp-btn--danger" style={onDelete ? { cursor: "pointer", opacity: 1 } : undefined} disabled={!onDelete} onClick={(e) => { e.stopPropagation(); if (window.confirm(`¿Eliminar "${merged?.nombre ?? title}"? Esta acción no se puede deshacer.`)) onDelete?.(); }}>Eliminar juego</button>
+                    <button className="rp-btn rp-btn--danger" style={onDelete ? { cursor: "pointer", opacity: 1 } : undefined} disabled={!onDelete} onClick={(e) => { e.stopPropagation(); if (window.confirm(`¿Eliminar "${displayTitle}"? Esta acción no se puede deshacer.`)) onDelete?.(); }}>Eliminar juego</button>
                   </div>
 
                   </>)}
@@ -596,6 +725,11 @@ function labelPlataforma(platform) {
     case "gamecube": return "GameCube";
     case "wii": return "Wii";
     case "wiiu": return "Wii U";
+    case "nes": return "NES";
+    case "snes": return "Super Nintendo";
+    case "gb": return "Game Boy";
+    case "gbc": return "Game Boy Color";
+    case "gba": return "Game Boy Advance";
     default: return "Nintendo";
   }
 }

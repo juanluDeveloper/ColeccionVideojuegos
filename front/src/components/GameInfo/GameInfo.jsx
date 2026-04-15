@@ -1,13 +1,13 @@
 import "./GameInfo.css";
 import React, { useState } from "react";
 import { Button, Typography } from "antd";
-import { linkIgdbGame } from "../../api/gamesApi";
+import { editGame, linkIgdbGame } from "../../api/gamesApi";
 import IgdbLinkModal from "../IgdbLinkModal/IgdbLinkModal";
 
 const { Text } = Typography;
 
 function formatDateDMY(dateLike) {
-  if (!dateLike) return "—";
+  if (!dateLike) return "-";
   const s = String(dateLike);
   const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (m) return `${m[3]}-${m[2]}-${m[1]}`;
@@ -21,10 +21,23 @@ function formatDateDMY(dateLike) {
 }
 
 function formatYear(dateLike) {
-  if (!dateLike) return "—";
+  if (!dateLike) return "-";
   const s = String(dateLike);
   const m = s.match(/^(\d{4})/);
-  return m ? m[1] : "—";
+  return m ? m[1] : "-";
+}
+
+function toApiDate(dateLike) {
+  if (!dateLike) return null;
+  const s = String(dateLike);
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+  const d = new Date(s);
+  if (isNaN(d)) return null;
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
 }
 
 const GameInfo = ({ game, onIgdbLinked }) => {
@@ -35,6 +48,7 @@ const GameInfo = ({ game, onIgdbLinked }) => {
   if (!game) return null;
 
   const hasIgdb = !!game.igdbGameId || !!game.igdbUrl;
+  const displayName = game.igdbName || game.nombre;
 
   const handleIgdbSelect = async (igdbItem) => {
     const localId = game?.id;
@@ -44,10 +58,17 @@ const GameInfo = ({ game, onIgdbLinked }) => {
     setIgdbLinkLoading(true);
     setIgdbLinkError("");
     try {
+      await editGame(localId, {
+        id: localId,
+        nombre: igdbItem?.name?.trim() || game?.nombre,
+        plataforma: game?.plataforma,
+        generos: Array.isArray(game?.generos) ? game.generos : [],
+        fechaLanzamiento: toApiDate(game?.fechaLanzamiento),
+      });
       await linkIgdbGame(localId, igdbId);
       setIgdbModalOpen(false);
       onIgdbLinked?.();
-    } catch (e) {
+    } catch {
       setIgdbLinkError("No se pudo vincular con IGDB.");
     } finally {
       setIgdbLinkLoading(false);
@@ -58,18 +79,16 @@ const GameInfo = ({ game, onIgdbLinked }) => {
 
   return (
     <div className="gameInfo">
-      {/* Cabecera */}
       <div className="gi-header">
-        <h2 className="gi-title" title={game.nombre}>{game.nombre}</h2>
+        <h2 className="gi-title" title={displayName}>{displayName}</h2>
         <div className="gi-subtitle">
           <span className="gi-badge gi-badge--platform">
-            {String(game.plataforma ?? "—").replace(/_/g, " ")}
+            {String(game.plataforma ?? "-").replace(/_/g, " ")}
           </span>
           <span className="gi-year">{formatYear(game.fechaLanzamiento)}</span>
         </div>
       </div>
 
-      {/* Ficha */}
       <div className="gi-section">
         <div className="gi-sectionTitle">Ficha</div>
 
@@ -81,20 +100,19 @@ const GameInfo = ({ game, onIgdbLinked }) => {
         </div>
 
         <div className="gi-field gi-field--full">
-          <span className="gi-fieldLabel">Géneros</span>
+          <span className="gi-fieldLabel">Generos</span>
           <div className="gi-chips">
             {generos.length ? (
               generos.map((g, i) => (
                 <span key={i} className="gi-chip">{g.replace(/_/g, " ")}</span>
               ))
             ) : (
-              <span className="gi-fieldValue">—</span>
+              <span className="gi-fieldValue">-</span>
             )}
           </div>
         </div>
       </div>
 
-      {/* IGDB compacto */}
       <div className="gi-section gi-igdb">
         <div className="gi-igdbRow">
           <div className="gi-igdbLeft">
@@ -128,7 +146,7 @@ const GameInfo = ({ game, onIgdbLinked }) => {
 
       <IgdbLinkModal
         open={igdbModalOpen}
-        initialQuery={game?.nombre}
+        initialQuery={displayName}
         existingIgdbGameId={game?.igdbGameId}
         onCancel={() => setIgdbModalOpen(false)}
         onSelect={handleIgdbSelect}

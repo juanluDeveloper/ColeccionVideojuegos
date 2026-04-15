@@ -1,17 +1,17 @@
 import React, { useState } from "react";
+import { Alert, Button, Form, Input } from "antd";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { login } from "../api/authApi";
-import {
-  Alert,
-  Button,
-  Card,
-  Form,
-  Input,
-  Typography,
-  Space,
-} from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import "../styles/login.css";
 
-const { Title, Text } = Typography;
+const SHELF_BOOKS = [
+  "login-book login-book--red",
+  "login-book login-book--blue",
+  "login-book login-book--gold",
+  "login-book login-book--purple",
+  "login-book login-book--dark",
+  "login-book login-book--green",
+];
 
 export default function Login({ onSuccess }) {
   const [form] = Form.useForm();
@@ -32,11 +32,10 @@ export default function Login({ onSuccess }) {
 
       onSuccess?.();
     } catch (e) {
-      // dependiendo de cómo venga tu backend, esto puede variar
       const backendMsg =
         e?.response?.data?.message ||
         e?.response?.data ||
-        "Usuario o contraseña incorrectos.";
+        "Usuario o contrasena incorrectos.";
 
       setError(backendMsg);
     } finally {
@@ -45,120 +44,155 @@ export default function Login({ onSuccess }) {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        padding: 24,
-        alignItems: "center",
-        justifyContent: "center",
-        background:
-          "radial-gradient(circle at 20% 10%, rgba(24,144,255,0.25), transparent 45%), radial-gradient(circle at 80% 30%, rgba(114,46,209,0.25), transparent 45%), linear-gradient(180deg, #0b1220 0%, #070a12 100%)",
-      }}
-    >
-      <div style={{ width: "100%", maxWidth: 440 }}>
-        <Card
-          bordered={false}
-          style={{
-            borderRadius: 18,
-            background: "rgba(255,255,255,0.06)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
-            backdropFilter: "blur(10px)",
-          }}
-          styles={{
-            body: { padding: 26 },
-          }}
-        >
-          <Space direction="vertical" size={6} style={{ width: "100%" }}>
-            <Title
-              level={3}
-              style={{
-                margin: 0,
-                color: "rgba(255,255,255,0.92)",
-                letterSpacing: 0.2,
-              }}
-            >
-              Video Game Collection
-            </Title>
+    <div className="login-page">
+      <div className="login-stage">
+        <section className="login-art-panel" aria-hidden="true">
+          <div className="login-art-glow login-art-glow--one" />
+          <div className="login-art-glow login-art-glow--two" />
+          <div className="login-room-window">
+            <span className="login-room-window-sun" />
+            <span className="login-room-window-hill login-room-window-hill--back" />
+            <span className="login-room-window-hill login-room-window-hill--front" />
+          </div>
 
-            <Text style={{ color: "rgba(255,255,255,0.65)" }}>
-              Accede para gestionar tu colección y registrar tus partidas.
-            </Text>
+          <div className="login-art-posters">
+            <div className="login-poster login-poster--one" />
+            <div className="login-poster login-poster--two" />
+          </div>
 
-            <div style={{ height: 10 }} />
-
-            {error && (
-              <Alert
-                style={{ marginBottom: 8 }}
-                type="error"
-                showIcon
-                message={error}
-              />
-            )}
-
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleFinish}
-              requiredMark={false}
-              autoComplete="off"
-            >
-              <Form.Item
-                label={<span style={{ color: "rgba(255,255,255,0.75)" }}>Usuario</span>}
-                name="username"
-                rules={[{ required: true, message: "Introduce tu usuario." }]}
-              >
-                <Input
-                  size="large"
-                  placeholder="Tu usuario"
-                  prefix={<UserOutlined />}
-                  onPressEnter={() => form.submit()}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={<span style={{ color: "rgba(255,255,255,0.75)" }}>Contraseña</span>}
-                name="password"
-                rules={[{ required: true, message: "Introduce tu contraseña." }]}
-              >
-                <Input.Password
-                  size="large"
-                  placeholder="Tu contraseña"
-                  prefix={<LockOutlined />}
-                  // ✅ aquí está lo que querías:
-                  onPressEnter={() => form.submit()}
-                />
-              </Form.Item>
-
-              <Button
-                type="primary"
-                htmlType="submit"
-                size="large"
-                block
-                loading={loading}
-                style={{
-                  borderRadius: 12,
-                  height: 44,
-                  fontWeight: 600,
-                }}
-              >
-                Entrar
-              </Button>
-            </Form>
-
-            <div style={{ marginTop: 12, textAlign: "center" }}>
-              <Text style={{ color: "rgba(255,255,255,0.45)", fontSize: 12 }}>
-                Miau
-              </Text>
+          <div className="login-art-shelf login-art-shelf--top">
+            <div className="login-art-books">
+              {SHELF_BOOKS.map((className, index) => (
+                <span key={`${className}-${index}`} className={className} />
+              ))}
             </div>
-          </Space>
-        </Card>
+          </div>
 
-        <div style={{ marginTop: 14, textAlign: "center" }}>
-          <Text style={{ color: "rgba(255,255,255,0.35)", fontSize: 12 }}>
-            Hecho por Juan Luis Aguilera Rivero ©
-          </Text>
-        </div>
+          <div className="login-art-shelf login-art-shelf--mid">
+            <div className="login-console">
+              <span className="login-console-slot" />
+              <span className="login-console-led" />
+            </div>
+            <div className="login-cartridges">
+              <span className="login-cartridge login-cartridge--one" />
+              <span className="login-cartridge login-cartridge--two" />
+              <span className="login-cartridge login-cartridge--three" />
+            </div>
+          </div>
+
+          <div className="login-floor-rug" />
+
+          <div className="login-desk">
+            <div className="login-monitor">
+              <div className="login-monitor-screen">
+                <span className="login-pixel login-pixel--one" />
+                <span className="login-pixel login-pixel--two" />
+                <span className="login-pixel login-pixel--three" />
+                <span className="login-pixel login-pixel--four" />
+              </div>
+              <div className="login-monitor-stand" />
+            </div>
+
+            <div className="login-controller">
+              <span className="login-controller-grip login-controller-grip--left" />
+              <span className="login-controller-grip login-controller-grip--right" />
+              <span className="login-controller-pad" />
+              <span className="login-controller-buttons" />
+            </div>
+
+            <div className="login-media-crate">
+              <span className="login-media-case login-media-case--one" />
+              <span className="login-media-case login-media-case--two" />
+              <span className="login-media-case login-media-case--three" />
+            </div>
+
+            <div className="login-handheld">
+              <span className="login-handheld-screen" />
+              <span className="login-handheld-pad" />
+              <span className="login-handheld-buttons" />
+            </div>
+          </div>
+
+          <div className="login-art-caption">
+            <span className="login-art-kicker">Coleccion viva</span>
+            <h2>Tu cuarto de juegos convertido en archivo personal.</h2>
+            <p>Catalogo, copias, progreso y spines con una identidad visual hecha para coleccionistas.</p>
+          </div>
+        </section>
+
+        <section className="login-panel">
+          <div className="login-panel-head">
+            <span className="login-panel-kicker">Acceso</span>
+            <h1>Entra en tu coleccion</h1>
+            <p>Abre tu biblioteca y sigue gestionando juegos, copias y partidas desde donde lo dejaste.</p>
+          </div>
+
+          {error && (
+            <Alert
+              className="login-alert"
+              type="error"
+              showIcon
+              message={error}
+            />
+          )}
+
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleFinish}
+            requiredMark={false}
+            autoComplete="off"
+            className="login-form"
+          >
+            <Form.Item
+              label="Usuario"
+              name="username"
+              rules={[{ required: true, message: "Introduce tu usuario." }]}
+            >
+              <Input
+                size="large"
+                placeholder="Tu usuario"
+                prefix={<UserOutlined />}
+                onPressEnter={() => form.submit()}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Contrasena"
+              name="password"
+              rules={[{ required: true, message: "Introduce tu contrasena." }]}
+            >
+              <Input.Password
+                size="large"
+                placeholder="Tu contrasena"
+                prefix={<LockOutlined />}
+                onPressEnter={() => form.submit()}
+              />
+            </Form.Item>
+
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              block
+              loading={loading}
+              className="login-submit"
+            >
+              Entrar
+            </Button>
+          </Form>
+
+          <div className="login-panel-notes">
+            <span className="login-note-pill">Biblioteca visual</span>
+            <span className="login-note-pill">Copias y estados</span>
+            <span className="login-note-pill">Playthroughs</span>
+          </div>
+
+          <div className="login-panel-footer">
+            <span>Proyecto personal de coleccion y seguimiento de videojuegos.</span>
+            <span>Juan Luis Aguilera Rivero</span>
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }) {
   const [collapsed, setCollapsed] = React.useState(false);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout className="app-shell" style={{ minHeight: "100vh" }}>
       <Sider
         collapsible
         collapsed={collapsed}

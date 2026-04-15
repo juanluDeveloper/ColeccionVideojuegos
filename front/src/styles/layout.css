@@ -1,25 +1,260 @@
-.app-sider {
-  border-right: 1px solid #f0f0f0;
+:root{
+  --app-accent: #245cff;
+  --app-accent-strong: #1238c7;
+  --app-accent-soft: #dce7ff;
+  --app-accent-alt: #5b48d6;
+  --app-accent-alt-soft: #ece9ff;
+  --app-accent-deep: #0f172a;
+  --app-accent-glow: rgba(36, 92, 255, 0.18);
+  --app-content-padding: 20px;
+  --app-header-height: 64px;
+  --app-panel-border: rgba(15, 23, 42, 0.08);
+  --app-panel-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
 }
 
-.app-logo {
-  height: 56px;
+html[data-app-density="compact"]{
+  --app-content-padding: 14px;
+  --app-header-height: 58px;
+}
+
+html[data-app-background="paper"] body{
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.72) 0%, transparent 34%),
+    linear-gradient(180deg, #f6f2ea 0%, #f8f9fb 52%, #eef2f8 100%);
+}
+
+html[data-app-background="mist"] body{
+  background:
+    radial-gradient(circle at 16% 10%, rgba(255,255,255,0.7) 0%, transparent 28%),
+    radial-gradient(circle at 84% 18%, var(--app-accent-glow) 0%, transparent 20%),
+    linear-gradient(180deg, #f2f4f8 0%, #eef4ff 48%, #edf2f6 100%);
+}
+
+html[data-app-background="midnight"] body{
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.09) 0%, transparent 26%),
+    radial-gradient(circle at 12% 12%, var(--app-accent-glow) 0%, transparent 24%),
+    linear-gradient(180deg, #151a25 0%, #1d2433 100%);
+}
+
+.app-shell{
+  background: transparent !important;
+}
+
+.app-shell .ant-layout{
+  background: transparent !important;
+}
+
+.app-sider{
+  border-right: 1px solid var(--app-panel-border);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(248,250,252,0.96) 100%) !important;
+  box-shadow: 10px 0 28px rgba(15, 23, 42, 0.04);
+}
+
+html[data-app-background="midnight"] .app-sider{
+  background:
+    linear-gradient(180deg, rgba(27, 34, 48, 0.94) 0%, rgba(18, 23, 35, 0.98) 100%) !important;
+  border-right-color: rgba(255,255,255,0.08);
+  box-shadow: 10px 0 28px rgba(0, 0, 0, 0.2);
+}
+
+.app-logo{
+  height: 64px;
   display: flex;
   align-items: center;
-  padding: 0 16px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
+  padding: 0 18px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--app-accent-strong);
 }
 
-.app-header {
-  background: white !important;
-  padding: 0 16px !important;
-  border-bottom: 1px solid #f0f0f0;
+html[data-app-background="midnight"] .app-logo{
+  color: #f8fafc;
+}
+
+.app-header{
+  height: var(--app-header-height) !important;
+  line-height: var(--app-header-height) !important;
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(10px);
+  padding: 0 18px !important;
+  border-bottom: 1px solid var(--app-panel-border);
   display: flex;
   align-items: center;
+  box-shadow: 0 6px 22px rgba(15, 23, 42, 0.04);
 }
 
-.app-content {
-  padding: 16px;
-  background: #f5f6f8;
+html[data-app-background="midnight"] .app-header{
+  background: rgba(20, 26, 39, 0.72) !important;
+  border-bottom-color: rgba(255,255,255,0.08);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+}
+
+.app-content{
+  padding: var(--app-content-padding);
+  background: transparent;
+}
+
+.topbar-shell{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
+}
+
+.topbar-account{
+  position: relative;
+}
+
+.topbar-account-trigger{
+  height: auto !important;
+  padding: 6px 10px !important;
+  border-radius: 16px !important;
+}
+
+.topbar-account-trigger:hover,
+.topbar-account-trigger:focus{
+  background: rgba(15, 23, 42, 0.05) !important;
+}
+
+.topbar-account-meta{
+  line-height: 1.1;
+  text-align: left;
+}
+
+.topbar-account-meta > div:first-child{
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.topbar-account-role{
+  font-size: 12px;
+  opacity: 0.72;
+}
+
+.topbar-account-menu{
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 190px;
+  padding: 8px;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(12px);
+  z-index: 500;
+}
+
+.topbar-account-menu-item{
+  width: 100%;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #0f172a;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.topbar-account-menu-item:hover{
+  background: rgba(15, 23, 42, 0.05);
+}
+
+.app-sider .ant-menu{
+  background: transparent;
+  border-inline-end: 0 !important;
+  padding-inline: 10px;
+}
+
+.app-sider .ant-menu-item{
+  margin-block: 6px !important;
+  border-radius: 14px !important;
+}
+
+.app-sider .ant-menu-item-selected{
+  background: linear-gradient(90deg, var(--app-accent-soft) 0%, rgba(255,255,255,0.8) 100%) !important;
+  color: var(--app-accent-strong) !important;
+  font-weight: 700;
+}
+
+.app-sider .ant-menu-item-selected::after{
+  display: none !important;
+}
+
+html[data-app-background="midnight"] .app-sider .ant-menu{
+  color: rgba(248, 250, 252, 0.86);
+}
+
+html[data-app-background="midnight"] .app-sider .ant-menu-item{
+  color: rgba(248, 250, 252, 0.86);
+}
+
+html[data-app-background="midnight"] .app-sider .ant-menu-item-selected{
+  background: linear-gradient(90deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%) !important;
+  color: #ffffff !important;
+}
+
+html[data-app-background="midnight"] .app-header .ant-breadcrumb,
+html[data-app-background="midnight"] .app-header .ant-breadcrumb-link,
+html[data-app-background="midnight"] .app-header .ant-space,
+html[data-app-background="midnight"] .app-header .ant-space-item,
+html[data-app-background="midnight"] .topbar-account-meta > div:first-child,
+html[data-app-background="midnight"] .topbar-account-role,
+html[data-app-background="midnight"] .topbar-account-menu-item{
+  color: rgba(248, 250, 252, 0.9);
+}
+
+html[data-app-background="midnight"] .topbar-account-trigger:hover,
+html[data-app-background="midnight"] .topbar-account-trigger:focus{
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+html[data-app-background="midnight"] .topbar-account-menu{
+  background: rgba(17, 24, 39, 0.96);
+  border-color: rgba(255,255,255,0.08);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.28);
+}
+
+html[data-app-background="midnight"] .topbar-account-menu-item:hover{
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html[data-app-motion="reduced"] *,
+html[data-app-motion="reduced"] *::before,
+html[data-app-motion="reduced"] *::after{
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+.ant-btn-primary{
+  background: var(--app-accent) !important;
+  border-color: var(--app-accent) !important;
+  box-shadow: 0 10px 22px var(--app-accent-glow);
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus{
+  background: var(--app-accent-strong) !important;
+  border-color: var(--app-accent-strong) !important;
+}
+
+.ant-btn-default:hover,
+.ant-btn-default:focus{
+  color: var(--app-accent-strong) !important;
+  border-color: rgba(15, 23, 42, 0.18) !important;
+}
+
+.ant-switch.ant-switch-checked{
+  background: var(--app-accent) !important;
 }
